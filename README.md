@@ -15,6 +15,8 @@ You can also shrink the size of all these CSV's using a handy script by [YoannDe
 
 ## Setup
 
+Create 2 folders in the root of the folder. `data` and `output`.
+
 You need two values
  - A discord bot token
  - A twitch client ID token [Register an app](https://dev.twitch.tv/console/apps/create)
