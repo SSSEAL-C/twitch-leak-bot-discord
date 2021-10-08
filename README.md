@@ -20,6 +20,8 @@ Create 2 folders in the root of the folder. `data` and `output`.
 You need two values
  - A discord bot token
  - A twitch client ID token [Register an app](https://dev.twitch.tv/console/apps/create)
+
+Set them in the `main.py` file
  
 ### Twitch Client App Registration Settings
 
@@ -30,5 +32,6 @@ OAuth Redirect URLs: `http://localhost/`
 Category: `Other`
 
 Other Details: Can be anything
+
 
 
