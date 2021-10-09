@@ -3,6 +3,7 @@ from os import listdir
 from os.path import isfile, join
 import requests
 import json
+import datetime
 apichoice='helix' # use either helix or kraken
 twitchid="twitch client id"
 twitchsecret="twitch client secret" #only required for helix
@@ -98,7 +99,7 @@ header=[]
 all_total_gross=[]
 
 intents = discord.Intents.default()
-activity=discord.Game(name="tw!help")
+activity=discord.Game(name="tw!info")
 bot = commands.Bot(command_prefix='tw!', intents=intents, activity=activity, status=discord.Status.online)
 
 @bot.event
@@ -141,7 +142,8 @@ async def revenue(ctx, username: str):
         thedata=await main(id,username,mainmsg)
         month=thedata[5]
         year=thedata[6]
-        embed = discord.Embed(title='Twitch Creator Info - '+username,description="Data Timespan: `"+str(month)+'/'+str(year)+"` - `10/21`")
+        time = datetime.datetime.utcnow()
+        embed = discord.Embed(title='Twitch Creator Info - '+username,description="Data Timespan: `"+str(month)+'/'+str(year)+"` - `10/21`",timestamp=time)
         embed.set_thumbnail(url=logo)
         embed.add_field(name=':name_badge: Bio',value='```\n'+str(bio)+'\n```',inline=False)
         embed.add_field(name=':alarm_clock: Created At',value="`"+str(created)+"`",inline=False)
@@ -150,19 +152,25 @@ async def revenue(ctx, username: str):
         embed.add_field(name=':star: Sub Total', value="`$"+str("{:,}".format(round(thedata[2],2)))+" USD`",inline=True)
         embed.add_field(name=':stars: Primers Total', value="`$"+str("{:,}".format(round(thedata[3],2)))+" USD`",inline=True)
         embed.add_field(name=':ice_cube: Bits Total', value="`$"+str("{:,}".format(round(thedata[4],2)))+" USD`",inline=True)
+        embed.set_footer(text="Made by SSSEAL-C")
         await mainmsg.edit(content='<@'+str(ctx.author.id)+">",embed=embed)
     if checkid == False or checkid != True:
-        embed = discord.Embed(title='Twitch Creator Info - '+username,description="`This user is not in the leak!`")
+        time = datetime.datetime.utcnow()
+        embed = discord.Embed(title='Twitch Creator Info - '+username,description="`This user is not in the leak!`",timestamp=time)
         embed.set_thumbnail(url=logo)
         embed.add_field(name=':name_badge: Bio',value='```\n'+str(bio)+'\n```',inline=False)
         embed.add_field(name=':alarm_clock: Created At',value="`"+str(created)+"`",inline=False)
+        embed.set_footer(text="Made by SSSEAL-C")
         mainmsg = await ctx.send(embed=embed)
 
 @bot.command()
 async def info(ctx):
-    embed = discord.Embed(title='Twitch Creator Info - Made by SSSEAL-C')
+    time = datetime.datetime.utcnow()
+    embed = discord.Embed(title='Twitch Creator Info - Made by SSSEAL-C', url="https://github.com/SSSEAL-C/twitch-leak-bot-discord",timestamp=time)
     embed.add_field(name=':busts_in_silhouette: Creators',value='`realsovietseal#0001`',inline=False)
     embed.add_field(name=':gear: Command Format',value='`tw!revenue [twitch username]`',inline=False)
+    embed.add_field(name=':keyboard: Github',value='`https://github.com/SSSEAL-C/twitch-leak-bot-discord`',inline=False)
+    embed.set_footer(text="Made by SSSEAL-C")
     await ctx.send('<@'+str(ctx.author.id)+">",embed=embed)
 
 
