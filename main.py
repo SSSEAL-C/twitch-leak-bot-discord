@@ -4,6 +4,7 @@ from os.path import isfile, join
 import requests
 import json
 import datetime
+time = datetime.datetime.utcnow()
 apichoice='helix' # use either helix or kraken
 twitchid="twitch client id"
 twitchsecret="twitch client secret" #only required for helix
@@ -72,13 +73,21 @@ async def main(id,username,ctx):
                             bit_share_ad_gross = row[8]
                             fuel_rev_gross = row[9]
                             bb_rev_gross = row[10]
+                            bits=float(bits_share_gross)+float(bit_share_ad_gross)
                             total=float(ad_share_gross)+float(sub_share_gross)+float(bits_share_gross)+float(prime_sub_share_gross)+float(bit_share_ad_gross)+float(fuel_rev_gross)+float(bb_rev_gross)
                             grosstotal=grosstotal+float(total)
                             adtotal=float(ad_share_gross)+adtotal
                             subtotal=subtotal+float(sub_share_gross)
                             bitstotal=bitstotal+float(bits_share_gross)+float(bits_developer_share_gross)+float(bits_extension_share_gross)
                             primestotal=primestotal+float(prime_sub_share_gross)
+                            yeardata=[total,ad_share_gross,sub_share_gross,bits,prime_sub_share_gross]
                             data=[ad_share_gross,sub_share_gross,bits_share_gross,bits_developer_share_gross,bits_extension_share_gross,prime_sub_share_gross,bit_share_ad_gross,fuel_rev_gross,bb_rev_gross,report_date,str(total),str(year)]
+                            if year == "19":
+                                data2019.append(yeardata)
+                            if year == "20":
+                                data2020.append(yeardata)
+                            if year == "21":
+                                data2021.append(yeardata)
                             revenue_data.append(data)
                             await sendmsg(ctx,username,amount_count,countfiles)
 
@@ -97,6 +106,9 @@ tax_data=[]
 shortctr_data=[]
 header=[]
 all_total_gross=[]
+data2019=[]
+data2020=[]
+data2021=[]
 
 intents = discord.Intents.default()
 activity=discord.Game(name="tw!info")
@@ -112,7 +124,7 @@ async def revenue(ctx, username: str):
     if apichoice == 'helix':
         atoken=await getAccessToken()
         print(username)
-        r=requests.get("https://api.twitch.tv/helix/users?login="+username.lower(), headers={"Client-ID":twitchid, "Accept":"application/vnd.twitchtv.v5+json",'Authorization': 'Bearer '+atoken})
+        r=requests.get("https://api.twitch.tv/helix/users?login="+username.lower(), headers={"Client-ID":twitchid, 'Authorization': 'Bearer '+atoken})
         rjson=json.loads(r.text)
         try:
             id=rjson['data'][0]["id"]
@@ -143,15 +155,63 @@ async def revenue(ctx, username: str):
         month=thedata[5]
         year=thedata[6]
         time = datetime.datetime.utcnow()
-        embed = discord.Embed(title='Twitch Creator Info - '+username,description="Data Timespan: `"+str(month)+'/'+str(year)+"` - `10/21`",timestamp=time)
+        data19=""
+        data20=""
+        data21=""
+        if data2019 == []:
+            data19="No data in 2019!"
+        if data2019 != []:
+            total2019=0
+            ad2019=0
+            sub2019=0
+            prime2019=0
+            bits2019=0
+            for list in data2019:
+                total2019=total2019+float(list[0])
+                ad2019=ad2019+float(list[1])
+                sub2019=sub2019+float(list[2])
+                prime2019=prime2019+float(list[3])
+                bits2019=bits2019+float(list[4])
+            data19=':moneybag: Gross Total: '+"`$"+str("{:,}".format(round(total2019,2)))+" USD`\n"+':tv: Ad Total: '+"`$"+str("{:,}".format(round(ad2019,2)))+" USD`\n"+':star: Sub Total: '+"`$"+str("{:,}".format(round(sub2019,2)))+" USD`\n"+':stars: Primers Total: '+"`$"+str("{:,}".format(round(prime2019,2)))+" USD`\n"+':ice_cube: Bits Total: '+"`$"+str("{:,}".format(round(bits2019,2)))+" USD`"
+        if data2020 == []:
+            data20="No data in 2020!"
+        if data2020 != []:
+            total2020=0
+            ad2020=0
+            sub2020=0
+            prime2020=0
+            bits2020=0
+            for list in data2020:
+                total2020=total2020+float(list[0])
+                ad2020=ad2020+float(list[1])
+                sub2020=sub2020+float(list[2])
+                prime2020=prime2020+float(list[3])
+                bits2020=bits2020+float(list[4])
+            data20=':moneybag: Gross Total: '+"`$"+str("{:,}".format(round(total2020,2)))+" USD`\n"+':tv: Ad Total: '+"`$"+str("{:,}".format(round(ad2020,2)))+" USD`\n"+':star: Sub Total: '+"`$"+str("{:,}".format(round(sub2020,2)))+" USD`\n"+':stars: Primers Total: '+"`$"+str("{:,}".format(round(prime2020,2)))+" USD`\n"+':ice_cube: Bits Total: '+"`$"+str("{:,}".format(round(bits2020,2)))+" USD`"
+        if data2021 == []:
+            data21="No data in 2021!"
+        if data2021 != []:
+            total2021=0
+            ad2021=0
+            sub2021=0
+            prime2021=0
+            bits2021=0
+            for list in data2021:
+                total2021=total2021+float(list[0])
+                ad2021=ad2021+float(list[1])
+                sub2021=sub2021+float(list[2])
+                prime2021=prime2021+float(list[3])
+                bits2021=bits2021+float(list[4])
+            data21=':moneybag: Gross Total: '+"`$"+str("{:,}".format(round(total2021,2)))+" USD`\n"+':tv: Ad Total: '+"`$"+str("{:,}".format(round(ad2021,2)))+" USD`\n"+':star: Sub Total: '+"`$"+str("{:,}".format(round(sub2021,2)))+" USD`\n"+':stars: Primers Total: '+"`$"+str("{:,}".format(round(prime2021,2)))+" USD`\n"+':ice_cube: Bits Total: '+"`$"+str("{:,}".format(round(bits2021,2)))+" USD`"
+        embed = discord.Embed(title='Twitch Creator Info - '+username,timestamp=time)
+        maindata=':moneybag: Gross Total: '+"`$"+str("{:,}".format(round(thedata[0],2)))+" USD`\n"+':tv: Ad Total: '+"`$"+str("{:,}".format(round(thedata[1],2)))+" USD`\n"+':star: Sub Total: '+"`$"+str("{:,}".format(round(thedata[2],2)))+" USD`\n"+':stars: Primers Total: '+"`$"+str("{:,}".format(round(thedata[3],2)))+" USD`\n"+':ice_cube: Bits Total: '+"`$"+str("{:,}".format(round(thedata[4],2)))+" USD`"
         embed.set_thumbnail(url=logo)
+        embed.add_field(name=':alarm_clock: Created At',value="`"+str(created)+"`", inline=False)
         embed.add_field(name=':name_badge: Bio',value='```\n'+str(bio)+'\n```',inline=False)
-        embed.add_field(name=':alarm_clock: Created At',value="`"+str(created)+"`",inline=False)
-        embed.add_field(name=':moneybag: Gross Total', value="`$"+str("{:,}".format(round(thedata[0],2)))+" USD`",inline=True)
-        embed.add_field(name=':tv: Ad Total', value="`$"+str("{:,}".format(round(thedata[1],2)))+" USD`",inline=True)
-        embed.add_field(name=':star: Sub Total', value="`$"+str("{:,}".format(round(thedata[2],2)))+" USD`",inline=True)
-        embed.add_field(name=':stars: Primers Total', value="`$"+str("{:,}".format(round(thedata[3],2)))+" USD`",inline=True)
-        embed.add_field(name=':ice_cube: Bits Total', value="`$"+str("{:,}".format(round(thedata[4],2)))+" USD`",inline=True)
+        embed.add_field(name="Data - Total `"+str(month)+'/'+str(year)+"` - `10/21`", value=maindata,inline=False)
+        embed.add_field(name="Data - 2019", value=str(data19),inline=False)
+        embed.add_field(name="Data - 2020", value=str(data20),inline=False)
+        embed.add_field(name="Data - 2021", value=str(data21),inline=False)
         embed.set_footer(text="Made by SSSEAL-C")
         await mainmsg.edit(content='<@'+str(ctx.author.id)+">",embed=embed)
     if checkid == False or checkid != True:
