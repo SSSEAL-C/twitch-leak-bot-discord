@@ -104,8 +104,8 @@ async def revenue(ctx, username: str):
     year=thedata[6]
     embed = discord.Embed(title='Twitch Creator Info - '+username,description="Data Timespan: `"+str(month)+'/'+str(year)+"` - `10/21`")
     embed.set_thumbnail(url=logo)
-    embed.add_field(name=':name_badge: Bio',value='```\n'+bio+'\n```',inline=False)
-    embed.add_field(name=':alarm_clock: Created At',value="`"+created+"`",inline=False)
+    embed.add_field(name=':name_badge: Bio',value='```\n'+str(bio)+'\n```',inline=False)
+    embed.add_field(name=':alarm_clock: Created At',value="`"+str(created)+"`",inline=False)
     embed.add_field(name=':moneybag: Gross Total', value="`$"+str("{:,}".format(round(thedata[0],2)))+" USD`",inline=True)
     embed.add_field(name=':tv: Ad Total', value="`$"+str("{:,}".format(round(thedata[1],2)))+" USD`",inline=True)
     embed.add_field(name=':star: Sub Total', value="`$"+str("{:,}".format(round(thedata[2],2)))+" USD`",inline=True)
