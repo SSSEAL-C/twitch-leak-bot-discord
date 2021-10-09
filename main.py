@@ -254,8 +254,8 @@ async def revenue(ctx, username: str, graph: str):
         import pyshorteners
 
         s = pyshorteners.Shortener()
-        timelineurl="{type:'line',data:{labels:"+str(labels)+", datasets:[{label:'Gross Total', data: "+str(totaldatagross)+", fill:false,borderColor:'blue'}]}}"
-        bargraphurl="{type:'bar',data:{labels:"+str(labels)+", datasets:[{label:'Gross Total', data: "+str(totaldatagross)+", fill:false,borderColor:'blue'},{label:'Gross Ads', data: "+str(totaldatagross)+", fill:false,borderColor:'green'},{label:'Gross Subs', data: "+str(totaldatasub)+", fill:false,borderColor:'yellow'},{label:'Gross Prime', data: "+str(totaldataprime)+", fill:false,borderColor:'red'},{label:'Gross Bits', data: "+str(totaldatabits)+", fill:false,borderColor:'orange'}]}}"
+        timelineurl="{options:{title:{display:true,text:'Twitch Creator Data - "+username+"', fontSize:20}},type:'line',data:{labels:"+str(labels)+", datasets:[{label:'Gross Total', data: "+str(totaldatagross)+", fill:false,borderColor:'blue'}]}}"
+        bargraphurl="{options:{title:{display:true,text:'Twitch Creator Data - "+username+"', fontSize:20}},type:'bar',data:{labels:"+str(labels)+", datasets:[{label:'Gross Total', data: "+str(totaldatagross)+", fill:false,borderColor:'blue'},{label:'Gross Ads', data: "+str(totaldatagross)+", fill:false,borderColor:'green'},{label:'Gross Subs', data: "+str(totaldatasub)+", fill:false,borderColor:'yellow'},{label:'Gross Prime', data: "+str(totaldataprime)+", fill:false,borderColor:'red'},{label:'Gross Bits', data: "+str(totaldatabits)+", fill:false,borderColor:'orange'}]}}"
         embed = discord.Embed(title='Twitch Creator Info - '+username,timestamp=time)
         maindata=':moneybag: Gross Total: '+"`$"+str("{:,}".format(round(thedata[0],2)))+" USD`\n"+':tv: Ad Total: '+"`$"+str("{:,}".format(round(thedata[1],2)))+" USD`\n"+':star: Sub Total: '+"`$"+str("{:,}".format(round(thedata[2],2)))+" USD`\n"+':stars: Primers Total: '+"`$"+str("{:,}".format(round(thedata[3],2)))+" USD`\n"+':ice_cube: Bits Total: '+"`$"+str("{:,}".format(round(thedata[4],2)))+" USD`"
         embed.set_thumbnail(url=logo)
