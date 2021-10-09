@@ -3,8 +3,10 @@ from os import listdir
 from os.path import isfile, join
 import requests
 import json
-twitchid="twitch client id here"
-dtoken='discord token here'
+apichoice='helix' # use either helix or kraken
+twitchid="twitch client id"
+twitchsecret="twitch client secret" #only required for helix
+dtoken='discord bot token'
 async def sendmsg(ctx,username,amount_count,countfiles):
     await ctx.edit(content=':white_check_mark: `'+username+' data found! ('+str(amount_count)+'/'+str(countfiles)+')`')
 async def senderr(ctx,username,amount_count,countfiles):
@@ -25,6 +27,10 @@ async def check(id):
                 return True
     except Exception as e:
         return e
+async def getAccessToken():
+    r=requests.post("https://id.twitch.tv/oauth2/token?client_id="+twitchid+'&client_secret='+twitchsecret+'&grant_type=client_credentials', headers={"Accept":"application/vnd.twitchtv.v5+json"})
+    rjson=json.loads(r.text)
+    return rjson['access_token']
 async def main(id,username,ctx):
     
     grosstotal=0
@@ -90,13 +96,10 @@ tax_data=[]
 shortctr_data=[]
 header=[]
 all_total_gross=[]
-description = '''An example bot to showcase the discord.ext.commands extension
-module.
-There are a number of utility commands being showcased here.'''
 
 intents = discord.Intents.default()
-
-bot = commands.Bot(command_prefix='tw!', description=description, intents=intents)
+activity=discord.Game(name="tw!help")
+bot = commands.Bot(command_prefix='tw!', intents=intents, activity=activity, status=discord.Status.online)
 
 @bot.event
 async def on_ready():
@@ -105,17 +108,33 @@ async def on_ready():
 
 @bot.command()
 async def revenue(ctx, username: str):
-    print(username)
-    r=requests.get("https://api.twitch.tv/kraken/users?login="+username.lower(), headers={"Client-ID":twitchid, "Accept":"application/vnd.twitchtv.v5+json"})
-    rjson=json.loads(r.text)
-    try:
-        id=rjson['users'][0]["_id"]
-        logo=rjson['users'][0]["logo"]
-        bio=rjson['users'][0]["bio"]
-        created=rjson['users'][0]["created_at"]
-    except:
-        await ctx.send('This user does not exist or the API is broken.')
-        return
+    if apichoice == 'helix':
+        atoken=await getAccessToken()
+        print(username)
+        r=requests.get("https://api.twitch.tv/helix/users?login="+username.lower(), headers={"Client-ID":twitchid, "Accept":"application/vnd.twitchtv.v5+json",'Authorization': 'Bearer '+atoken})
+        rjson=json.loads(r.text)
+        try:
+            id=rjson['data'][0]["id"]
+            logo=rjson['data'][0]["profile_image_url"]
+            bio=rjson['data'][0]["description"]
+            created=rjson['data'][0]["created_at"]
+        except Exception as e:
+            print(str(e))
+            await ctx.send('This user does not exist or the API is broken. (check your twitch tokens)')
+            return
+    if apichoice == 'kraken':
+        print(username)
+        r=requests.get("https://api.twitch.tv/kraken/users?login="+username.lower(), headers={"Client-ID":twitchid, "Accept":"application/vnd.twitchtv.v5+json"})
+        rjson=json.loads(r.text)
+        try:
+            id=rjson['users'][0]["_id"]
+            logo=rjson['users'][0]["logo"]
+            bio=rjson['users'][0]["bio"]
+            created=rjson['users'][0]["created_at"]
+        except Exception as e:
+            print(str(e))
+            await ctx.send('This user does not exist or the API is broken.')
+            return
     checkid=await check(id)
     if checkid == True:
         mainmsg = await ctx.send('Data for '+username+' is loading... You will be pinged when the embed is sent!')
@@ -145,5 +164,6 @@ async def info(ctx):
     embed.add_field(name=':busts_in_silhouette: Creators',value='`realsovietseal#0001`',inline=False)
     embed.add_field(name=':gear: Command Format',value='`tw!revenue [twitch username]`',inline=False)
     await ctx.send('<@'+str(ctx.author.id)+">",embed=embed)
+
 
 bot.run(dtoken)
