@@ -9,11 +9,27 @@ async def sendmsg(ctx,username,amount_count,countfiles):
     await ctx.edit(content=':white_check_mark: `'+username+' data found! ('+str(amount_count)+'/'+str(countfiles)+')`')
 async def senderr(ctx,username,amount_count,countfiles):
     await ctx.edit(content=':x: `'+username+' no data found! ('+str(amount_count)+'/'+str(countfiles)+')`')
+async def check(id):
+    try:
+        detected=0
+        with open('./data/ids/ids.json', 'r') as g1:
+            g=g1.read()
+            data=json.loads(g)
+            users=data['ids']
+            for row in users:
+                if row == id:
+                    detected=1
+            if detected==0:
+                return False
+            if detected==1:
+                return True
+    except Exception as e:
+        return e
 async def main(id,username,ctx):
     
     grosstotal=0
-    yearog=""
-    monthog=""
+    yearog="19"
+    monthog="06"
     adtotal=0
     subtotal=0
     bitstotal=0
@@ -73,6 +89,7 @@ revenue_data=[]
 tax_data=[]
 shortctr_data=[]
 header=[]
+all_total_gross=[]
 description = '''An example bot to showcase the discord.ext.commands extension
 module.
 There are a number of utility commands being showcased here.'''
@@ -88,6 +105,7 @@ async def on_ready():
 
 @bot.command()
 async def revenue(ctx, username: str):
+    print(username)
     r=requests.get("https://api.twitch.tv/kraken/users?login="+username.lower(), headers={"Client-ID":twitchid, "Accept":"application/vnd.twitchtv.v5+json"})
     rjson=json.loads(r.text)
     try:
@@ -98,20 +116,28 @@ async def revenue(ctx, username: str):
     except:
         await ctx.send('This user does not exist or the API is broken.')
         return
-    mainmsg = await ctx.send('Data for '+username+' is loading... You will be pinged when the embed is sent!')
-    thedata=await main(id,username,mainmsg)
-    month=thedata[5]
-    year=thedata[6]
-    embed = discord.Embed(title='Twitch Creator Info - '+username,description="Data Timespan: `"+str(month)+'/'+str(year)+"` - `10/21`")
-    embed.set_thumbnail(url=logo)
-    embed.add_field(name=':name_badge: Bio',value='```\n'+str(bio)+'\n```',inline=False)
-    embed.add_field(name=':alarm_clock: Created At',value="`"+str(created)+"`",inline=False)
-    embed.add_field(name=':moneybag: Gross Total', value="`$"+str("{:,}".format(round(thedata[0],2)))+" USD`",inline=True)
-    embed.add_field(name=':tv: Ad Total', value="`$"+str("{:,}".format(round(thedata[1],2)))+" USD`",inline=True)
-    embed.add_field(name=':star: Sub Total', value="`$"+str("{:,}".format(round(thedata[2],2)))+" USD`",inline=True)
-    embed.add_field(name=':stars: Primers Total', value="`$"+str("{:,}".format(round(thedata[3],2)))+" USD`",inline=True)
-    embed.add_field(name=':ice_cube: Bits Total', value="`$"+str("{:,}".format(round(thedata[4],2)))+" USD`",inline=True)
-    await mainmsg.edit(content='<@'+str(ctx.author.id)+">",embed=embed)
+    checkid=await check(id)
+    if checkid == True:
+        mainmsg = await ctx.send('Data for '+username+' is loading... You will be pinged when the embed is sent!')
+        thedata=await main(id,username,mainmsg)
+        month=thedata[5]
+        year=thedata[6]
+        embed = discord.Embed(title='Twitch Creator Info - '+username,description="Data Timespan: `"+str(month)+'/'+str(year)+"` - `10/21`")
+        embed.set_thumbnail(url=logo)
+        embed.add_field(name=':name_badge: Bio',value='```\n'+str(bio)+'\n```',inline=False)
+        embed.add_field(name=':alarm_clock: Created At',value="`"+str(created)+"`",inline=False)
+        embed.add_field(name=':moneybag: Gross Total', value="`$"+str("{:,}".format(round(thedata[0],2)))+" USD`",inline=True)
+        embed.add_field(name=':tv: Ad Total', value="`$"+str("{:,}".format(round(thedata[1],2)))+" USD`",inline=True)
+        embed.add_field(name=':star: Sub Total', value="`$"+str("{:,}".format(round(thedata[2],2)))+" USD`",inline=True)
+        embed.add_field(name=':stars: Primers Total', value="`$"+str("{:,}".format(round(thedata[3],2)))+" USD`",inline=True)
+        embed.add_field(name=':ice_cube: Bits Total', value="`$"+str("{:,}".format(round(thedata[4],2)))+" USD`",inline=True)
+        await mainmsg.edit(content='<@'+str(ctx.author.id)+">",embed=embed)
+    if checkid == False or checkid != True:
+        embed = discord.Embed(title='Twitch Creator Info - '+username,description="`This user is not in the leak!`")
+        embed.set_thumbnail(url=logo)
+        embed.add_field(name=':name_badge: Bio',value='```\n'+str(bio)+'\n```',inline=False)
+        embed.add_field(name=':alarm_clock: Created At',value="`"+str(created)+"`",inline=False)
+        mainmsg = await ctx.send(embed=embed)
 
 @bot.command()
 async def info(ctx):
