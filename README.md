@@ -19,9 +19,10 @@ You can also shrink the size of all these CSV's using a handy script by [YoannDe
 
 Create 2 folders in the root of the folder. `data` and `output`.
 
-You need two values
+You need two or three values
  - A discord bot token
- - A twitch client ID token [Register an app](https://dev.twitch.tv/console/apps/create)
+ - A twitch client ID [Register an app](https://dev.twitch.tv/console/apps/create)
+ - A twitch client secret (only with Kraken)
 
 Set them in the `main.py` file
  
@@ -35,5 +36,20 @@ Category: `Other`
 
 Other Details: Can be anything
 
+### Twitch API: Helix or Kraken?
+
+If you have registered your app from after July 2021 you are using **helix**
+
+If you are using an app you registered before July 2021 you are using **kraken**
 
 
+# Final Setup
+
+open `main.py` and edit the following values
+
+`apichoice`: either `helix` or `kraken`
+`twitchid`: the Twitch Client ID
+`twitchsecret`: the Twitch Client Secret (only with `kraken`)
+`dtoken`: the Discord Bot Token
+
+Thank you alot to [YoannDeb](https://github.com/YoannDeb) for Helix API testing and setup and the .csv cleaner script!
