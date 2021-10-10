@@ -11,9 +11,9 @@ import datetime
 time = datetime.datetime.utcnow()
 
 apichoice = 'helix'  # use either helix or kraken
-twitchid="twitch client id"
-twitchsecret="twitch client secret" #only required for helix
-dtoken='discord bot token'
+twitchid = "twitch client id"
+twitchsecret = "twitch client secret"  # only required for helix
+dtoken = 'discord bot token'
 
 if twitchid == "twitch client id" or dtoken == 'discord bot token':
     exit("You must enter twitch adn discord API parameters, see README.md for instructions")
@@ -339,7 +339,8 @@ async def revenue(ctx, username: str, *options: str):
         maindata=':moneybag: Gross Total: '+"`$"+str("{:,}".format(round(thedata[0],2)))+" USD`\n"+':tv: Ad Total: '+"`$"+str("{:,}".format(round(thedata[1],2)))+" USD`\n"+':star: Sub Total: '+"`$"+str("{:,}".format(round(thedata[2],2)))+" USD`\n"+':stars: Primers Total: '+"`$"+str("{:,}".format(round(thedata[3],2)))+" USD`\n"+':ice_cube: Bits Total: '+"`$"+str("{:,}".format(round(thedata[4],2)))+" USD`"
         embed.set_thumbnail(url=logo)
         embed.add_field(name = ':alarm_clock: Created At',value="`"+str(created)+"`", inline=False)
-        embed.add_field(name = ':name_badge: Bio',value='```\n'+str(bio)+'\n```',inline=False)
+        if bio:
+            embed.add_field(name = ':name_badge: Bio',value='```\n'+str(bio)+'\n```',inline=False)
         embed.add_field(name = "Data - Total `"+str(month)+'/'+str(year)+"` - `10/21`", value=maindata,inline=False)
         embed.add_field(name = "Data - 2019", value=str(data19),inline=True)
         embed.add_field(name = "Data - 2020", value=str(data20),inline=True)
@@ -363,8 +364,9 @@ async def revenue(ctx, username: str, *options: str):
         embed = discord.Embed(title=f"Twitch Creator Info - {display_name} - ({username})",description="`This user is not in the leak!`",timestamp=time)
 
         embed.set_thumbnail(url=logo)
-        embed.add_field(name=':name_badge: Bio', value='```\n' +
-                        str(bio)+'\n```', inline=False)
+        if bio:
+            embed.add_field(name=':name_badge: Bio', value='```\n' +
+                            str(bio)+'\n```', inline=False)
         embed.add_field(name=':alarm_clock: Created At',
                         value="`"+str(created)+"`", inline=False)
         embed.set_footer(text="Made by SSSEAL-C")
