@@ -361,7 +361,7 @@ async def info(ctx):
 
 @bot.command()
 async def ping(ctx):
-    embedVar = discord.Embed(title="Pong", description="Pong", color=0x00ff00)
+    embedVar = discord.Embed(title="Ping", description="Pong", color=0x00ff00)
     embedVar.add_field(name="Latency", value=str(round(bot.latency * 1000)), inline=False)
     await ctx.send(embed=embedVar)
 
