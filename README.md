@@ -30,7 +30,7 @@ Set them in the `main.py` file
 
 ## Creating a Discord Bot
 
-see https://www.startinop.com/gaming/discord-bot/ for detailled instructions (till step 4 included, when you invite the bot.)
+[This article](https://www.startinop.com/gaming/discord-bot/) for detailled instructions (till step 4 included, when you invite the bot.)
 
 The bot needs rights to read messages and see messages history and that's all.
  
