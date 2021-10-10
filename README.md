@@ -28,7 +28,7 @@ You need two or three values
 
 Set them in the `main.py` file
 
-### Create discord bot and get his token
+### Creating a Discord Bot
 
 see https://www.startinop.com/gaming/discord-bot/ for detailled instructions (till step 4 included, when you invite the bot.)
 
