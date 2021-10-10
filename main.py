@@ -11,9 +11,9 @@ import datetime
 time = datetime.datetime.utcnow()
 
 apichoice = 'helix'  # use either helix or kraken
-twitchid="twitch client id"
-twitchsecret="twitch client secret"  # only required for helix
-dtoken='discord bot token'
+twitchid="t2upeoodwvshkxalek74kf9kuznuah"
+twitchsecret="w19g38i0mf3zmfvztp8rtra1si2pp2"
+dtoken='ODk2NTM0MjgzMjg2NjQyNjk4.YWIgnQ.UcyWU7J8-TGe-wkWLpgkmh11R7E'
 
 if twitchid == "twitch client id" or dtoken == 'discord bot token':
     exit("You must enter twitch adn discord API parameters, see README.md for instructions")
@@ -392,7 +392,7 @@ async def info(ctx):
 
 @bot.command()
 async def ping(ctx):
-    embedVar = discord.Embed(title="Pong", description="Pong", color=0x00ff00)
+    embedVar = discord.Embed(title="Ping", description="Pong", color=0x00ff00)
     embedVar.add_field(name="Latency", value=str(round(bot.latency * 1000)), inline=False)
     await ctx.send(embed=embedVar)
 
