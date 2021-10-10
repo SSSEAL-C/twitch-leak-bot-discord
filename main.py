@@ -145,6 +145,7 @@ async def on_ready():
 @bot.command()
 async def check(ctx, username: str):
     username_before_api = username
+    mainmsg = await ctx.send(content='`Checking '+username+'...`')
     id = ""
     if apichoice == 'helix':
         atoken = await getAccessToken()
@@ -196,7 +197,7 @@ async def check(ctx, username: str):
         embed.add_field(name=':alarm_clock: Created At',
                         value="`"+str(created)+"`", inline=False)
         embed.set_footer(text="Made by SSSEAL-C")
-        mainmsg = await ctx.send(embed=embed)
+        await mainmsg.edit(embed=embed,content="")
     if not idcheck:
         time = datetime.datetime.utcnow()
         embed = discord.Embed(url="https://twitch.tv/{username}", title=f"Twitch Creator Info - {display_name} - ({username})",
@@ -209,7 +210,7 @@ async def check(ctx, username: str):
         embed.add_field(name=':alarm_clock: Created At',
                         value="`"+str(created)+"`", inline=False)
         embed.set_footer(text="Made by SSSEAL-C")
-        mainmsg = await ctx.send(embed=embed)
+        await mainmsg.edit(embed=embed,content="")
 
 
 @bot.command()
