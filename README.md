@@ -2,7 +2,7 @@
 A bot to display per user data from the Twitch Leak by username
 
 
-## Wheres the data?
+# Wheres the data?
 
 I can't and don't want to supply the .csv's as they are 
 
@@ -17,7 +17,7 @@ You can also shrink the size of all these CSV's using a handy script by [YoannDe
 
 Just run csv_setup.py once. It will take a little time but will significatively accelerate future process.
 
-## Setup
+# Setup
 
 Create 2 folders in the root of the folder. `data` and `output`.
 
@@ -28,13 +28,13 @@ You need two or three values
 
 Set them in the `main.py` file
 
-### Creating a Discord Bot
+## Creating a Discord Bot
 
 see https://www.startinop.com/gaming/discord-bot/ for detailled instructions (till step 4 included, when you invite the bot.)
 
 The bot needs rights to read messages and see messages history and that's all.
  
-### Twitch Client App Registration Settings
+## Twitch Client App Registration Settings
 
 Name: Can be anything
 
@@ -44,7 +44,7 @@ Category: `Other`
 
 Other Details: Can be anything
 
-### Twitch API: Helix or Kraken?
+## Twitch API: Helix or Kraken?
 
 If you have registered your app from after July 2021 you are using **helix**
 
@@ -63,5 +63,8 @@ open `main.py` and edit the following values
 
 Thank you alot to [YoannDeb](https://github.com/YoannDeb) for Helix API testing and setup and the .csv cleaner script!
 
-# Use of bot
-Just ask him ```tw!info``` and he will tell you his secrets !
+# How to use the Discord Bot
+## Commands
+```tw!info```
+
+```tw!revenue [user] <graph? yes/no>```
