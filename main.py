@@ -197,7 +197,7 @@ async def check(ctx, username: str):
         embed.add_field(name=':alarm_clock: Created At',
                         value="`"+str(created)+"`", inline=False)
         embed.set_footer(text="Made by SSSEAL-C")
-        await mainmsg.edit(embed=embed,content="")
+        await mainmsg.edit(embed=embed, content="")
     if not idcheck:
         time = datetime.datetime.utcnow()
         embed = discord.Embed(url="https://twitch.tv/{username}", title=f"Twitch Creator Info - {display_name} - ({username})",
@@ -210,7 +210,7 @@ async def check(ctx, username: str):
         embed.add_field(name=':alarm_clock: Created At',
                         value="`"+str(created)+"`", inline=False)
         embed.set_footer(text="Made by SSSEAL-C")
-        await mainmsg.edit(embed=embed,content="")
+        await mainmsg.edit(embed=embed, content="")
 
 
 @bot.command()
