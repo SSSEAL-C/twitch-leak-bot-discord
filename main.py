@@ -278,6 +278,11 @@ async def revenue(ctx, username: str, graph: str):
         embed.set_footer(text="Made by SSSEAL-C")
         mainmsg = await ctx.send(embed=embed)
 
+@revenue.error
+async def revenue_error(ctx,error):
+    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+        await ctx.send('You are not providing an argument! (eg. tw!revenue ludwig yes)')
+
 @bot.command()
 async def info(ctx):
     time = datetime.datetime.utcnow()
