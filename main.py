@@ -118,10 +118,6 @@ async def on_ready():
 
 @bot.command()
 async def revenue(ctx, username: str, graph: str):
-    if username is str:
-        return await ctx.send('You must specfiy a username!')
-    if graph is str:
-        return await ctx.send('You must specfiy yes or no for the graph!')
     data2019=[]
     data2020=[]
     data2021=[]
@@ -180,12 +176,15 @@ async def revenue(ctx, username: str, graph: str):
                 totaldataprime.append(0)
                 totaldatabits.append(0)
         if data2019 != []:
+            totalcount2019=5
+            counterfor2019=0
             total2019=0
             ad2019=0
             sub2019=0
             prime2019=0
             bits2019=0
             for list in data2019:
+                counterfor2019=counterfor2019+1
                 totaldatagross.append(float(list[0]))
                 totaldataad.append(float(list[1]))
                 totaldatasub.append(float(list[2]))
@@ -196,6 +195,12 @@ async def revenue(ctx, username: str, graph: str):
                 sub2019=sub2019+float(list[2])
                 prime2019=prime2019+float(list[3])
                 bits2019=bits2019+float(list[4])
+            for i in range(totalcount2019-counterfor2019):
+                totaldatagross.append(0)
+                totaldataad.append(0)
+                totaldatasub.append(0)
+                totaldataprime.append(0)
+                totaldatabits.append(0)
             data19=':moneybag: Gross Total: '+"`$"+str("{:,}".format(round(total2019,2)))+" USD`\n"+':tv: Ad Total: '+"`$"+str("{:,}".format(round(ad2019,2)))+" USD`\n"+':star: Sub Total: '+"`$"+str("{:,}".format(round(sub2019,2)))+" USD`\n"+':stars: Primers Total: '+"`$"+str("{:,}".format(round(prime2019,2)))+" USD`\n"+':ice_cube: Bits Total: '+"`$"+str("{:,}".format(round(bits2019,2)))+" USD`"
         if data2020 == []:
             data20="No data in 2020!"
@@ -207,12 +212,15 @@ async def revenue(ctx, username: str, graph: str):
                 totaldataprime.append(0)
                 totaldatabits.append(0)
         if data2020 != []:
+            totalcount2020=12
+            counterfor2020=0
             total2020=0
             ad2020=0
             sub2020=0
             prime2020=0
             bits2020=0
             for list in data2020:
+                counterfor2020=counterfor2020+1
                 totaldatagross.append(float(list[0]))
                 totaldataad.append(float(list[1]))
                 totaldatasub.append(float(list[2]))
@@ -223,6 +231,12 @@ async def revenue(ctx, username: str, graph: str):
                 sub2020=sub2020+float(list[2])
                 prime2020=prime2020+float(list[3])
                 bits2020=bits2020+float(list[4])
+            for i in range(totalcount2020-counterfor2020):
+                totaldatagross.append(0)
+                totaldataad.append(0)
+                totaldatasub.append(0)
+                totaldataprime.append(0)
+                totaldatabits.append(0)
             data20=':moneybag: Gross Total: '+"`$"+str("{:,}".format(round(total2020,2)))+" USD`\n"+':tv: Ad Total: '+"`$"+str("{:,}".format(round(ad2020,2)))+" USD`\n"+':star: Sub Total: '+"`$"+str("{:,}".format(round(sub2020,2)))+" USD`\n"+':stars: Primers Total: '+"`$"+str("{:,}".format(round(prime2020,2)))+" USD`\n"+':ice_cube: Bits Total: '+"`$"+str("{:,}".format(round(bits2020,2)))+" USD`"
         if data2021 == []:
             data21="No data in 2021!"
@@ -234,12 +248,15 @@ async def revenue(ctx, username: str, graph: str):
                 totaldataprime.append(0)
                 totaldatabits.append(0)
         if data2021 != []:
+            totalcount2021=10
+            counterfor2021=0
             total2021=0
             ad2021=0
             sub2021=0
             prime2021=0
             bits2021=0
             for list in data2021:
+                counterfor2021=counterfor2021+1
                 totaldatagross.append(float(list[0]))
                 totaldataad.append(float(list[1]))
                 totaldatasub.append(float(list[2]))
@@ -250,12 +267,20 @@ async def revenue(ctx, username: str, graph: str):
                 sub2021=sub2021+float(list[2])
                 prime2021=prime2021+float(list[3])
                 bits2021=bits2021+float(list[4])
+            for i in range(totalcount2021-counterfor2021):
+                totaldatagross.append(0)
+                totaldataad.append(0)
+                totaldatasub.append(0)
+                totaldataprime.append(0)
+                totaldatabits.append(0)
             data21=':moneybag: Gross Total: '+"`$"+str("{:,}".format(round(total2021,2)))+" USD`\n"+':tv: Ad Total: '+"`$"+str("{:,}".format(round(ad2021,2)))+" USD`\n"+':star: Sub Total: '+"`$"+str("{:,}".format(round(sub2021,2)))+" USD`\n"+':stars: Primers Total: '+"`$"+str("{:,}".format(round(prime2021,2)))+" USD`\n"+':ice_cube: Bits Total: '+"`$"+str("{:,}".format(round(bits2021,2)))+" USD`"
-        import pyshorteners
+        if graph == "yes":
+            import pyshorteners
 
-        s = pyshorteners.Shortener()
-        timelineurl="{options:{title:{display:true,text:'Twitch Creator Data - "+username+"', fontSize:20}},type:'line',data:{labels:"+str(labels)+", datasets:[{label:'Gross Total', data: "+str(totaldatagross)+", fill:false,borderColor:'blue'}]}}"
-        bargraphurl="{options:{title:{display:true,text:'Twitch Creator Data - "+username+"', fontSize:20}},type:'bar',data:{labels:"+str(labels)+", datasets:[{label:'Gross Total', data: "+str(totaldatagross)+", fill:false,borderColor:'blue'},{label:'Gross Ads', data: "+str(totaldataad)+", fill:false,borderColor:'green'},{label:'Gross Subs', data: "+str(totaldatasub)+", fill:false,borderColor:'yellow'},{label:'Gross Prime', data: "+str(totaldataprime)+", fill:false,borderColor:'red'},{label:'Gross Bits', data: "+str(totaldatabits)+", fill:false,borderColor:'orange'}]}}"
+            s = pyshorteners.Shortener()
+            pigraphurl="{options:{title:{display:true,text:'Twitch Creator Data - "+username+" - Pi Chart of Gross Payment', fontSize:20}},type:'pie',data:{labels:['Gross Ads', 'Gross Subs','Gross Prime','Gross Bits'],datasets:[{data:["+str(thedata[1])+","+str(thedata[2])+","+str(thedata[3])+","+str(thedata[4])+"]}]}}"
+            timelineurl="{options:{title:{display:true,text:'Twitch Creator Data - "+username+" - Timeline of Gross Total', fontSize:20}},type:'line',data:{labels:"+str(labels)+", datasets:[{label:'Gross Total', data: "+str(totaldatagross)+", fill:false,borderColor:'blue'}]}}"
+            bargraphurl="{options:{title:{display:true,text:'Twitch Creator Data - "+username+" - Bar Graph of split per month', fontSize:20}},type:'bar', datasets:[{label:'Gross Ads', data: "+str(totaldataad)+", fill:false,borderColor:'green'},{label:'Gross Subs', data: "+str(totaldatasub)+", fill:false,borderColor:'yellow'},{label:'Gross Prime', data: "+str(totaldataprime)+", fill:false,borderColor:'red'},{label:'Gross Bits', data: "+str(totaldatabits)+", fill:false,borderColor:'orange'}]}}"
         embed = discord.Embed(title='Twitch Creator Info - '+username,timestamp=time)
         maindata=':moneybag: Gross Total: '+"`$"+str("{:,}".format(round(thedata[0],2)))+" USD`\n"+':tv: Ad Total: '+"`$"+str("{:,}".format(round(thedata[1],2)))+" USD`\n"+':star: Sub Total: '+"`$"+str("{:,}".format(round(thedata[2],2)))+" USD`\n"+':stars: Primers Total: '+"`$"+str("{:,}".format(round(thedata[3],2)))+" USD`\n"+':ice_cube: Bits Total: '+"`$"+str("{:,}".format(round(thedata[4],2)))+" USD`"
         embed.set_thumbnail(url=logo)
@@ -266,7 +291,7 @@ async def revenue(ctx, username: str, graph: str):
         embed.add_field(name="Data - 2020", value=str(data20),inline=True)
         embed.add_field(name="Data - 2021", value=str(data21),inline=True)
         if graph == "yes":
-            embed.add_field(name="Graphs",value="Gross Total: "+s.tinyurl.short('https://quickchart.io/chart?c='+quote(timelineurl))+'\nAll Values: '+s.tinyurl.short('https://quickchart.io/chart?c='+quote(bargraphurl)))
+            embed.add_field(name="Graphs",value="Timeline of Gross Total: "+s.tinyurl.short('https://quickchart.io/chart?c='+quote(timelineurl))+'\nBar Graph of split per month: '+s.tinyurl.short('https://quickchart.io/chart?c='+quote(bargraphurl))+'\nPi Chart of Gross Payment: '+s.tinyurl.short('https://quickchart.io/chart?c='+quote(pigraphurl)))
         embed.set_footer(text="Made by SSSEAL-C")
         await mainmsg.edit(content='<@'+str(ctx.author.id)+">",embed=embed)
     if checkid == False or checkid != True:
