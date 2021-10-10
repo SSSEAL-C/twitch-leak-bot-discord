@@ -46,6 +46,7 @@ async def check(id):
     except Exception as e:
         return e
 
+    
 async def getAccessToken():
     r=requests.post("https://id.twitch.tv/oauth2/token?client_id="+twitchid+'&client_secret='+twitchsecret+'&grant_type=client_credentials')
     rjson=json.loads(r.text)
@@ -72,7 +73,6 @@ async def main(id,display_name,ctx,data2019,data2020,data2021):
         month = month[:-4]
         try:
             with open('./data/'+str(file), 'r') as g:
-
                     reader = csv.reader(g)
                     detected=0
                     report_date = str(month)+'/'+str(year)
@@ -133,7 +133,6 @@ bot = commands.Bot(command_prefix='tw!', intents=intents,
                    activity=activity, status=discord.Status.online)
 
 
-
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
@@ -164,6 +163,7 @@ async def revenue(ctx, username: str, *options: str):
             print(str(e))
             await ctx.send('This user does not exist or the API is broken. (check your twitch tokens)')
             return
+        
     if apichoice == 'kraken':
         print(username)
         r = requests.get("https://api.twitch.tv/kraken/users?login="+username.lower(),
@@ -331,23 +331,23 @@ async def revenue(ctx, username: str, *options: str):
             print("graph")
             import pyshorteners
             s = pyshorteners.Shortener()
-            pigraphurl="{options:{title:{display:true,text:'Twitch Creator Data - "+display_name+" - Pi Chart of Gross Payment', fontSize:20}},type:'pie',data:{labels:['Gross Ads', 'Gross Subs','Gross Prime','Gross Bits'],datasets:[{data:["+str(thedata[1])+","+str(thedata[2])+","+str(thedata[3])+","+str(thedata[4])+"]}]}}"
-            timelineurl="{options:{title:{display:true,text:'Twitch Creator Data - "+display_name+" - Timeline of Gross Total', fontSize:20}},type:'line',data:{labels:"+str(labels)+", datasets:[{label:'Gross Total', data: "+str(totaldatagross)+", fill:false,borderColor:'blue'}]}}"
+            pigraphurl = "{options:{title:{display:true,text:'Twitch Creator Data - "+display_name+" - Pi Chart of Gross Payment', fontSize:20}},type:'pie',data:{labels:['Gross Ads', 'Gross Subs','Gross Prime','Gross Bits'],datasets:[{data:["+str(thedata[1])+","+str(thedata[2])+","+str(thedata[3])+","+str(thedata[4])+"]}]}}"
+            timelineurl = "{options:{title:{display:true,text:'Twitch Creator Data - "+display_name+" - Timeline of Gross Total', fontSize:20}},type:'line',data:{labels:"+str(labels)+", datasets:[{label:'Gross Total', data: "+str(totaldatagross)+", fill:false,borderColor:'blue'}]}}"
             bargraphurl = "{options:{title:{display:true,text:'Twitch Creator Data - " + display_name + "', fontSize:20}},type:'bar',data:{labels:" + str(labels) + ", datasets:[{label:'Gross Total', data: " + str(totaldatagross) + ", fill:false,borderColor:'blue'},{label:'Ads', data: " + str(totaldataad) + ", fill:false,borderColor:'green'},{label:'Subs', data: " + str(totaldatasub) + ", fill:false,borderColor:'yellow'},{label:'Prime', data: " + str(totaldataprime) + ", fill:false,borderColor:'red'},{label:'Bits', data: " + str(totaldatabits) + ", fill:false,borderColor:'orange'}]}}"
 
         embed = discord.Embed(title=f"Twitch Creator Info - {display_name} - ({username})", timestamp=time)
         maindata=':moneybag: Gross Total: '+"`$"+str("{:,}".format(round(thedata[0],2)))+" USD`\n"+':tv: Ad Total: '+"`$"+str("{:,}".format(round(thedata[1],2)))+" USD`\n"+':star: Sub Total: '+"`$"+str("{:,}".format(round(thedata[2],2)))+" USD`\n"+':stars: Primers Total: '+"`$"+str("{:,}".format(round(thedata[3],2)))+" USD`\n"+':ice_cube: Bits Total: '+"`$"+str("{:,}".format(round(thedata[4],2)))+" USD`"
         embed.set_thumbnail(url=logo)
-        embed.add_field(name=':alarm_clock: Created At',value="`"+str(created)+"`", inline=False)
-        embed.add_field(name=':name_badge: Bio',value='```\n'+str(bio)+'\n```',inline=False)
-        embed.add_field(name="Data - Total `"+str(month)+'/'+str(year)+"` - `10/21`", value=maindata,inline=False)
-        embed.add_field(name="Data - 2019", value=str(data19),inline=True)
-        embed.add_field(name="Data - 2020", value=str(data20),inline=True)
-        embed.add_field(name="Data - 2021", value=str(data21),inline=True)
+        embed.add_field(name = ':alarm_clock: Created At',value="`"+str(created)+"`", inline=False)
+        embed.add_field(name = ':name_badge: Bio',value='```\n'+str(bio)+'\n```',inline=False)
+        embed.add_field(name = "Data - Total `"+str(month)+'/'+str(year)+"` - `10/21`", value=maindata,inline=False)
+        embed.add_field(name = "Data - 2019", value=str(data19),inline=True)
+        embed.add_field(name = "Data - 2020", value=str(data20),inline=True)
+        embed.add_field(name = "Data - 2021", value=str(data21),inline=True)
 
         # Some graph related stuff
         if "nograph" not in options:
-            embed.add_field(name="Graphs",value="Timeline of Gross Total: "+s.tinyurl.short('https://quickchart.io/chart?c='+quote(timelineurl))+'\nBar Graph of split per month: '+s.tinyurl.short('https://quickchart.io/chart?c='+quote(bargraphurl))+'\nPi Chart of Gross Payment: '+s.tinyurl.short('https://quickchart.io/chart?c='+quote(pigraphurl)))
+            embed.add_field(name = "Graphs",value="Timeline of Gross Total: "+s.tinyurl.short('https://quickchart.io/chart?c='+quote(timelineurl))+'\nBar Graph of split per month: '+s.tinyurl.short('https://quickchart.io/chart?c='+quote(bargraphurl))+'\nPi Chart of Gross Payment: '+s.tinyurl.short('https://quickchart.io/chart?c='+quote(pigraphurl)))
 
         # Exemple code to handle other options :
         # if "demo" in options:
@@ -380,11 +380,11 @@ async def revenue_error(ctx, error):
 @bot.command()
 async def info(ctx):
     time = datetime.datetime.utcnow()
-    embed = discord.Embed(title='Twitch Creator Info - Made by SSSEAL-C', url="https://github.com/SSSEAL-C/twitch-leak-bot-discord",timestamp=time)
-    embed.add_field(name=':busts_in_silhouette: Creators',value='`realsovietseal#0001`',inline=False)
-    embed.add_field(name=':gear: Commands',value='`tw!revenue [twitch username] <option>` (eg. `tw!revenue ludwig nograph`) \n `tw!ping` \n `tw!info` :-)',inline=False)
-    embed.add_field(name=':gear: Revenue Command Options',value='`nograph`', inline=False)
-    embed.add_field(name=':keyboard: Github',value='`https://github.com/SSSEAL-C/twitch-leak-bot-discord`',inline=False)
+    embed = discord.Embed(title='Twitch Creator Info - Made by SSSEAL-C', url= "https://github.com/SSSEAL-C/twitch-leak-bot-discord", timestamp= time)
+    embed.add_field(name= ':busts_in_silhouette: Creators',value= '`realsovietseal#0001`',inline= False)
+    embed.add_field(name= ':gear: Commands',value='`tw!revenue [twitch username] <option>` (eg. `tw!revenue ludwig nograph`) \n `tw!ping` \n `tw!info` :-)', inline= False)
+    embed.add_field(name= ':gear: Revenue Command Options', value= '`nograph`', inline= False)
+    embed.add_field(name= ':keyboard: Github', value= '`https://github.com/SSSEAL-C/twitch-leak-bot-discord`', inline= False)
 
     embed.set_footer(text="Made by SSSEAL-C")
     await ctx.send('<@'+str(ctx.author.id)+">", embed=embed)
