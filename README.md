@@ -81,8 +81,10 @@ Thank you alot to [YoannDeb](https://github.com/YoannDeb) for Helix API testing 
 
 # How to use the Discord Bot
 ## Commands
-```tw!info
+```
+tw!info
 tw!ping
 tw!revenue [user] <option>
-tw!check [user]```
+tw!check [user]
+```
 
