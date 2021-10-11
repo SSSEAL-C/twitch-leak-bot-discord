@@ -2,7 +2,7 @@
 A bot to display per user data from the Twitch Leak by username
 
 
-# Wheres the data?
+# Where's the data?
 
 I can't and don't want to supply the .csv's as they are 
 
@@ -13,15 +13,31 @@ The only data supplied is a list of ID's in a .json for who was in the leak.
 
 If you get the CSV's (via your own methods) you extract each .csv to the file format `all_revenues_yy_mm.csv` (eg. `all_revenues_21_01.csv` is for January 2021) to the folder `data/`
 
-You can also import and shrink the size of all these CSV's using a handy script by [YoannDeb](https://github.com/YoannDeb) to automatically extract and delete the blank lines.
+You can also import and shrink the size of all these CSV's (see setup below) using a handy script by [YoannDeb](https://github.com/YoannDeb) to automatically extract and delete the blank lines.
 
-Just copy the twitch-payout folder at the root of the project and run ```csv_setup.py```.
-
-You can choose to just import, import and shrink or just shrink already imported data.
-
-Shrinking will take a little time but will significatively accelerate future process.
 
 # Setup
+
+## Import and shrink csv files:
+
+* This will import, rename and optionally shrink original gz files into a data folder.
+* Original Twitch-payouts folder must be at the root of the project.
+* Choose import and shrink or just import.
+* Shrinking will delete lines with no revenue, and significantly speed up the parsing process.
+* You can also shrink already imported files.
+* Once imported you can delete or move the original Twitch-payouts folder
+
+Type in a terminal:
+
+* On linux or macOS:
+
+```Python3 csv_setup.py```
+
+* On Windows:
+
+```Python csv_setup.py```
+
+## Twitch API and discord bot IDs
 
 You need two or three values
  - A discord bot token
