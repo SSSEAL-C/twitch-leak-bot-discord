@@ -393,6 +393,12 @@ async def revenue(ctx, username: str, *options: str):
                 "{:,}".format(prime2021)) + " USD`\n" + ':ice_cube: Bits Total: ' + "`$" + str(
                 "{:,}".format(bits2021)) + " USD`"
 
+        # Pie chart data formatting
+        ads_percentage = round(thedata[1] / thedata[0] * 100, 2)
+        subs_percentage = round(thedata[2] / thedata[0] * 100, 2)
+        primes_percentage = round(thedata[3] / thedata[0] * 100, 2)
+        bits_percentage = round(thedata[4] / thedata[0] * 100, 2)
+
         # Some graph related stuff
         if "nograph" not in options:
             import pyshorteners
@@ -402,12 +408,12 @@ async def revenue(ctx, username: str, *options: str):
             bargraphurl = "{options:{title:{display:true,text:'Twitch Creator Data - " + display_name + "', fontSize:20}},type:'line',data:{labels:" + str(
                 labels) + ", datasets:[{label:'Ads', data: " + str(
                 totaldataad) + ", fill:false,borderColor:'green'},{label:'Subs', data: " + str(
-                totaldatasub) + ", fill:false,borderColor:'yellow'},{label:'Prime', data: " + str(
+                totaldatasub) + ", fill:false,borderColor:'yellow'},{label:'Primes', data: " + str(
                 totaldataprime) + ", fill:false,borderColor:'red'},{label:'Bits', data: " + str(
                 totaldatabits) + ", fill:false,borderColor:'orange'}]}}"
             pigraphurl = "{options:{title:{display:true,text:'Twitch Creator Data - "+display_name + \
-                " - Pi Chart of Gross Payment', fontSize:20}},type:'pie',data:{labels:['Gross Ads', 'Gross Subs','Gross Prime','Gross Bits'],datasets:[{data:["+str(
-                    thedata[1])+","+str(thedata[2])+","+str(thedata[3])+","+str(thedata[4])+"]}]}}"
+                " - Pi Chart of Gross Payment', fontSize:20}},type:'pie',data:{labels:['Gross Ads', 'Gross Subs','Gross Primes','Gross Bits'],datasets:[{data:["+str(
+                    ads_percentage)+","+str(subs_percentage)+","+str(primes_percentage)+","+str(bits_percentage)+"]}]}}"
 
 
         embed = discord.Embed(
@@ -428,7 +434,7 @@ async def revenue(ctx, username: str, *options: str):
 
         # Some graph related stuff
         if "nograph" not in options:
-            embed.add_field(name="Graphs", value="Timeline of Gross Total: "+s.tinyurl.short('https://quickchart.io/chart?c='+quote(timelineurl))+'\nTimeline of split per month: ' +
+            embed.add_field(name="Graphs", value="Timeline of Gross Total: "+s.tinyurl.short('https://quickchart.io/chart?c='+quote(timelineurl))+'\nDetailed Timeline: ' +
                             s.tinyurl.short('https://quickchart.io/chart?c='+quote(bargraphurl))+'\nPi Chart of Gross Payment: '+s.tinyurl.short('https://quickchart.io/chart?c='+quote(pigraphurl)))
 
         # Exemple code to handle other options :
