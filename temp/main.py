@@ -457,15 +457,15 @@ async def revenue(ctx, username: str, *options: str):
 
         if "timeline" in options or "detailed" in options or "piechart" in options or "allgraphs" in options:
             if "timeline" in options:
-                await ctx.send(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(timeline_url))}")
+                await main_msg.edit(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(timeline_url))}")
             if "detailed" in options:
-                await ctx.send(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(detailed_url))}")
+                await main_msg.edit(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(detailed_url))}")
             if "piechart" in options:
-                await ctx.send(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(pie_chart_url))}")
+                await main_msg.edit(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(pie_chart_url))}")
             if "allgraphs" in options:
-                await ctx.send(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(timeline_url))}")
-                await ctx.send(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(detailed_url))}")
-                await ctx.send(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(pie_chart_url))}")
+                await main_msg.edit(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(timeline_url))}")
+                await main_msg.edit(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(detailed_url))}")
+                await main_msg.edit(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(pie_chart_url))}")
 
         else:
             embed = discord.Embed(
@@ -549,6 +549,7 @@ async def cache(ctx):
                               value=f'{cached_results[key]["streamer_data"][0]}')
     embed_cache.add_field(name=f'Streamer(s) in cache:',
                           value=f'{cached_count}')
+    # embed_cache.edit(title=f'Twitch Creator Info - {cached_count}Streamers cached')
     await ctx.send(embed=embed_cache)
 
 
