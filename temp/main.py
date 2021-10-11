@@ -13,9 +13,9 @@ import pyshorteners
 now = datetime.datetime.utcnow()
 
 API_CHOICE = 'helix'  # use either helix or kraken
-TWITCH_ID = "t2upeoodwvshkxalek74kf9kuznuah"
-TWITCH_SECRET = "2ocifi9oyh9q7f0lvfxwmbyhkqxn1b"  # only required for helix
-DISCORD_TOKEN = 'ODk2NTM0MjgzMjg2NjQyNjk4.YWIgnQ.0Phhp9Z3Bmt_Yh8LoBqtKZhqHZU'
+TWITCH_ID = "twitch client id"
+TWITCH_SECRET = "twitch client secret"  # only required for helix
+DISCORD_TOKEN = 'discord bot token'
 
 DISCORD_BOT_PREFIX = "tw3!"
 
