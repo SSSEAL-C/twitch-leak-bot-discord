@@ -11,9 +11,7 @@ I can't and don't want to supply the .csv's as they are
 
 The only data supplied is a list of ID's in a .json for who was in the leak.
 
-If you get the CSV's (via your own methods) you extract each .csv to the file format `all_revenues_yy_mm.csv` (eg. `all_revenues_21_01.csv` is for January 2021) to the folder `data/`
-
-You can also import and shrink the size of all these CSV's (see setup below) using a handy script by [YoannDeb](https://github.com/YoannDeb) to automatically extract and delete the blank lines.
+If you get the CSV's (via your own methods) you can use the script `csv_setup` to set them up to the correct config!
 
 
 # Setup
