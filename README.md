@@ -13,13 +13,15 @@ The only data supplied is a list of ID's in a .json for who was in the leak.
 
 If you get the CSV's (via your own methods) you extract each .csv to the file format `all_revenues_yy_mm.csv` (eg. `all_revenues_21_01.csv` is for January 2021) to the folder `data/`
 
-You can also shrink the size of all these CSV's using a handy script by [YoannDeb](https://github.com/YoannDeb) to delete the blank lines.
+You can also import and shrink the size of all these CSV's using a handy script by [YoannDeb](https://github.com/YoannDeb) to automatically extract and delete the blank lines.
 
-Just run csv_setup.py once. It will take a little time but will significatively accelerate future process.
+Just copy the twitch-payout folder at the root of the project and run ```csv_setup.py```.
+
+You can choose to just import, import and shrink or just shrink already imported data.
+
+Shrinking will take a little time but will significatively accelerate future process.
 
 # Setup
-
-Create 2 folders in the root of the folder. `data` and `output`.
 
 You need two or three values
  - A discord bot token
