@@ -15,7 +15,7 @@ import pyshorteners
 now = datetime.datetime.utcnow()
 
 
-VERSION="v1.0.0"
+VERSION="v1.0.1"
 API_CHOICE = 'helix'  # use either helix or kraken
 TWITCH_ID = "twitch client id"
 TWITCH_SECRET = "twitch client secret"  # only required for helix
@@ -32,7 +32,6 @@ cached_results = {}
 
 
 async def store_user_info_in_cache(bio, created, display_name, logo, streamer_data, streamer_id, username):
-    print("storing_user")
     cached_results[username] = {
         "streamer_id": streamer_id,
         "display_name": display_name,
@@ -196,72 +195,75 @@ async def on_ready():
 
 @bot.command()
 async def check(ctx, username: str):
-    username_before_api = username
-    main_msg = await ctx.send(content='`Checking '+username+'...`')
-    streamer_id = ""
+    try:
+        username_before_api = username
+        main_msg = await ctx.send(content='`Checking '+username+'...`')
+        streamer_id = ""
 
-    print(f"check {username}")
+        print(f"check {username}")
 
-    if API_CHOICE == 'helix':
-        atoken = await get_access_token()
-        r = requests.get("https://api.twitch.tv/helix/users?login=" + username_before_api.lower(),
-                         headers={"Client-ID": TWITCH_ID, 'Authorization': 'Bearer ' + atoken})
-        rjson = json.loads(r.text)
-        try:
-            streamer_id = rjson['data'][0]["id"]
-            display_name = rjson['data'][0]["display_name"]
-            logo = rjson['data'][0]["profile_image_url"]
-            bio = rjson['data'][0]["description"]
-            created = rjson['data'][0]["created_at"]
-        except Exception as e:
-            print(str(e))
-            await ctx.send('This user does not exist or the API is broken. (check your twitch tokens)')
-            return
+        if API_CHOICE == 'helix':
+            atoken = await get_access_token()
+            r = requests.get("https://api.twitch.tv/helix/users?login=" + username_before_api.lower(),
+                            headers={"Client-ID": TWITCH_ID, 'Authorization': 'Bearer ' + atoken})
+            rjson = json.loads(r.text)
+            try:
+                streamer_id = rjson['data'][0]["id"]
+                display_name = rjson['data'][0]["display_name"]
+                logo = rjson['data'][0]["profile_image_url"]
+                bio = rjson['data'][0]["description"]
+                created = rjson['data'][0]["created_at"]
+            except Exception as e:
+                print(str(e))
+                await ctx.send('This user does not exist or the API is broken. (check your twitch tokens)')
+                return
 
-    if API_CHOICE == 'kraken':
-        r = requests.get("https://api.twitch.tv/kraken/users?login=" + username_before_api.lower(),
-                         headers={"Client-ID": TWITCH_ID, "Accept": "application/vnd.twitchtv.v5+json"})
-        rjson = json.loads(r.text)
-        try:
-            streamer_id = rjson['users'][0]["_id"]
-            display_name = rjson['data'][0]["display_name"]
-            logo = rjson['users'][0]["logo"]
-            bio = rjson['users'][0]["bio"]
-            created = rjson['users'][0]["created_at"]
-        except Exception as e:
-            print(str(e))
-            await ctx.send('This user does not exist or the API is broken.')
-            return
+        if API_CHOICE == 'kraken':
+            r = requests.get("https://api.twitch.tv/kraken/users?login=" + username_before_api.lower(),
+                            headers={"Client-ID": TWITCH_ID, "Accept": "application/vnd.twitchtv.v5+json"})
+            rjson = json.loads(r.text)
+            try:
+                streamer_id = rjson['users'][0]["_id"]
+                display_name = rjson['data'][0]["display_name"]
+                logo = rjson['users'][0]["logo"]
+                bio = rjson['users'][0]["bio"]
+                created = rjson['users'][0]["created_at"]
+            except Exception as e:
+                print(str(e))
+                await ctx.send('This user does not exist or the API is broken.')
+                return
 
-    username_after_api = username
+        username_after_api = username
 
-    idcheck = await check_id(streamer_id)
-    if idcheck:
-        now = datetime.datetime.utcnow()
-        embed = discord.Embed(url=f"https://twitch.tv/{username}", title=f"Twitch Creator Info - {display_name} - ({username_after_api})",
-                              description="`This user is in the leak!`", timestamp=now)
+        idcheck = await check_id(streamer_id)
+        if idcheck:
+            now = datetime.datetime.utcnow()
+            embed = discord.Embed(url=f"https://twitch.tv/{username}", title=f"Twitch Creator Info - {display_name} - ({username_after_api})",
+                                description="`This user is in the leak!`", timestamp=now)
 
-        embed.set_thumbnail(url=logo)
-        if bio:
-            embed.add_field(name=':name_badge: Bio', value='```\n' +
-                            str(bio)+'\n```', inline=False)
-        embed.add_field(name=':alarm_clock: Created At',
-                        value="`"+str(created)+"`", inline=False)
-        embed.set_footer(text="Made by SSSEAL-C")
-        await main_msg.edit(embed=embed, content="")
-    if not idcheck:
-        now = datetime.datetime.utcnow()
-        embed = discord.Embed(url=f"https://twitch.tv/{username}", title=f"Twitch Creator Info - {display_name} - ({username})",
-                              description="`This user is not in the leak!`", timestamp=now)
+            embed.set_thumbnail(url=logo)
+            if bio:
+                embed.add_field(name=':name_badge: Bio', value='```\n' +
+                                str(bio)+'\n```', inline=False)
+            embed.add_field(name=':alarm_clock: Created At',
+                            value="`"+str(created)+"`", inline=False)
+            embed.set_footer(text="Made by SSSEAL-C")
+            await main_msg.edit(embed=embed, content="")
+        if not idcheck:
+            now = datetime.datetime.utcnow()
+            embed = discord.Embed(url=f"https://twitch.tv/{username}", title=f"Twitch Creator Info - {display_name} - ({username})",
+                                description="`This user is not in the leak!`", timestamp=now)
 
-        embed.set_thumbnail(url=logo)
-        if bio:
-            embed.add_field(name=':name_badge: Bio', value='```\n' +
-                            str(bio)+'\n```', inline=False)
-        embed.add_field(name=':alarm_clock: Created At',
-                        value="`"+str(created)+"`", inline=False)
-        embed.set_footer(text="Made by SSSEAL-C")
-        await main_msg.edit(embed=embed, content="")
+            embed.set_thumbnail(url=logo)
+            if bio:
+                embed.add_field(name=':name_badge: Bio', value='```\n' +
+                                str(bio)+'\n```', inline=False)
+            embed.add_field(name=':alarm_clock: Created At',
+                            value="`"+str(created)+"`", inline=False)
+            embed.set_footer(text="Made by SSSEAL-C")
+            await main_msg.edit(embed=embed, content="")
+    except Exception as e:
+        print(str(e))
 
 
 @bot.command()
@@ -530,8 +532,8 @@ async def info(ctx):
     embed.add_field(name=':keyboard: Github',
                     value='`https://github.com/SSSEAL-C/twitch-leak-bot-discord`', inline=False)
     embed.add_field(name=':cd: Version',
-                        value=f'`{VERSION}`', inline=False)
-    embed.set_footer(text=f"Made by SSSEAL-C")
+                            value=f'`{VERSION}`', inline=False)
+    embed.set_footer(text="Made by SSSEAL-C")
     await ctx.send('<@'+str(ctx.author.id)+">", embed=embed)
 
 
@@ -550,13 +552,14 @@ async def ping(ctx):
 async def cache(ctx):
     try:
         cached_count = 0
-        embed_cache = discord.Embed(title='Twitch Creator Info - Streamers cached')
         cached_streamer_list=[]
         for key in cached_results:
             cached_count += 1
             cached_streamer_list.append(key)
-        embed_cache.add_field(name=f'Streamer(s) in cache:',
-                                value=f'{cached_count}')
+        if cached_count == 1:
+            embed_cache = discord.Embed(title=f'Cache - {cached_count} user cached')
+        else:
+            embed_cache = discord.Embed(title=f'Cache - {cached_count} users cached')
         if str(cached_streamer_list) == "[]":
             embed_cache.add_field(name=f'User list',
                                     value=f'No users cached!')
