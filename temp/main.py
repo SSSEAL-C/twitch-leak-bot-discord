@@ -538,47 +538,47 @@ async def info(ctx):
     await ctx.send('<@'+str(ctx.author.id)+">", embed=embed)
 
 
-# @bot.command()
-# async def ping(ctx):
-#     embed_var = discord.Embed(title="Ping :ping_pong:")
-#     embed_var.add_field(name="Latency", value=str(
-#         round(bot.latency * 1000) + 'ms'), inline=False)
-#     await ctx.send(embed=embed_var)
+@bot.command()
+async def ping(ctx):
+    embed_var = discord.Embed(title="Ping :ping_pong:")
+    embed_var.add_field(name="Latency", value=str(
+        round(bot.latency * 1000) + 'ms'), inline=False)
+    await ctx.send(embed=embed_var)
 
 
-# @bot.command()
-# async def cache(ctx):
-#     cached_count = 0
-#     embed_cache = discord.Embed(title='Twitch Creator Info - Streamers cached')
-#     for key in cached_results:
-#         cached_count += 1
-#         embed_cache.add_field(name=f'{cached_results[key]["display_name"]} - ({key}) - ({cached_results[key]["display_name"]})',
-#                               value=f'{cached_results[key]["streamer_data"][0]}$')
-#     embed_cache.add_field(name=f'Streamer(s) in cache:',
-#                           value=f'{cached_count}')
-#     # embed_cache.edit(title=f'Twitch Creator Info - {cached_count}Streamers cached')
-#     await ctx.send(embed=embed_cache)
+@bot.command()
+async def cache(ctx):
+    cached_count = 0
+    embed_cache = discord.Embed(title='Twitch Creator Info - Streamers cached')
+    for key in cached_results:
+        cached_count += 1
+        embed_cache.add_field(name=f'{cached_results[key]["display_name"]} - ({key}) - ({cached_results[key]["display_name"]})',
+                              value=f'{cached_results[key]["streamer_data"][0]}$')
+    embed_cache.add_field(name=f'Streamer(s) in cache:',
+                          value=f'{cached_count}')
+    # embed_cache.edit(title=f'Twitch Creator Info - {cached_count}Streamers cached')
+    await ctx.send(embed=embed_cache)
 
-#
-# '''
-# Error catching
-# '''
-#
-#
-# @revenue.error
-# async def revenue_error(ctx, error):
-#     if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-#         await ctx.send(f'You are not providing an argument! (eg. {DISCORD_BOT_PREFIX}revenue ludwig)')
-#
-#
-# @bot.event
-# async def on_command_error(ctx, error):
-#     if isinstance(error, discord.ext.commands.errors.CommandNotFound):
-#         await ctx.send("That command wasn't found! Sorry :-(")
-#         await ctx.send(f"Type {DISCORD_BOT_PREFIX}info to see available commands :-)")
-#     if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-#         await ctx.send("Please enter a command")
-#         await ctx.send(f'(eg. {DISCORD_BOT_PREFIX}revenue ludwig)')
-#         await ctx.send(f"Type {DISCORD_BOT_PREFIX}info to see all available commands :-)")
+
+'''
+Error catching
+'''
+
+
+@revenue.error
+async def revenue_error(ctx, error):
+    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+        await ctx.send(f'You are not providing an argument! (eg. {DISCORD_BOT_PREFIX}revenue ludwig)')
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, discord.ext.commands.errors.CommandNotFound):
+        await ctx.send("That command wasn't found! Sorry :-(")
+        await ctx.send(f"Type {DISCORD_BOT_PREFIX}info to see available commands :-)")
+    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+        await ctx.send("Please enter a command")
+        await ctx.send(f'(eg. {DISCORD_BOT_PREFIX}revenue ludwig)')
+        await ctx.send(f"Type {DISCORD_BOT_PREFIX}info to see all available commands :-)")
 
 bot.run(DISCORD_TOKEN)
