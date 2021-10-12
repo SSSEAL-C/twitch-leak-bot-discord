@@ -69,7 +69,7 @@ async def send_err(ctx, username, amount_count, countfiles):
 
 async def check_id(streamer_id):
     detected = 0
-    with open(pathlib.Path.cwd() / 'data' / ids / ids.json, 'r') as g1:
+    with open(pathlib.Path.cwd() / 'data' / 'ids' / 'ids.json', 'r') as g1:
         g = g1.read()
         data = json.loads(g)
         users = data['ids']
