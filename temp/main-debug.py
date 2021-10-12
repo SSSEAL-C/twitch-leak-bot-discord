@@ -14,6 +14,8 @@ import pyshorteners
 
 now = datetime.datetime.utcnow()
 
+
+VERSION="v1.0.0"
 API_CHOICE = 'helix'  # use either helix or kraken
 TWITCH_ID = "twitch client id"
 TWITCH_SECRET = "twitch client secret"  # only required for helix
@@ -527,8 +529,9 @@ async def info(ctx):
                     value='`nograph`\n`timeline`\n`detailed`\n`piechart`', inline=False)
     embed.add_field(name=':keyboard: Github',
                     value='`https://github.com/SSSEAL-C/twitch-leak-bot-discord`', inline=False)
-
-    embed.set_footer(text="Made by SSSEAL-C")
+    embed.add_field(name=':cd: Version',
+                        value=f'`{VERSION}`', inline=False)
+    embed.set_footer(text=f"Made by SSSEAL-C")
     await ctx.send('<@'+str(ctx.author.id)+">", embed=embed)
 
 
