@@ -21,7 +21,8 @@ DISCORD_TOKEN = 'discord bot token'
 
 DISCORD_BOT_PREFIX = "tw!"
 
-USE_DATABASE = True
+USE_DATABASE = True  # Set to True or False to use database storage
+
 DATABASE_FOLDER = os.path.dirname(__file__) + '\\data\\db\\'
 DATABASE_FILE = os.path.dirname(__file__) + '\\data\\db\\db.json'
 
