@@ -44,6 +44,12 @@ You need two or three values
 
 Set them in the `main.py` file
 
+## Database storage
+
+Streamer data will be cached during program execution to avoid researching an already searched user.
+If USE_DATABASE set to True (default value), the cache will be stored in a local database file, and recalled when the program is reloaded. 
+If set to False, database file will not be used and cache will be lost when the program is closed.
+
 ## Creating a Discord Bot
 
 [This article](https://www.startinop.com/gaming/discord-bot/) for detailled instructions (till step 4 included, when you invite the bot.)
