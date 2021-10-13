@@ -22,7 +22,7 @@ DISCORD_TOKEN = 'discord bot token'
 DISCORD_BOT_PREFIX = "tw!"
 
 USE_DATABASE = True
-DATABASE_DIRECTORY = os.path.dirname(__file__)+'\\data\\db\\'
+DATABASE_FOLDER = os.path.dirname(__file__) + '\\data\\db\\'
 DATABASE_FILE = os.path.dirname(__file__)+'\\data\\db\\db.json'
 
 
@@ -236,7 +236,7 @@ def check_database_existence():
 
 async def store_user_in_database(username):
     if USE_DATABASE:
-        os.makedirs(os.path.dirname(__file__)+'\\data\\db', exist_ok=True)
+        os.makedirs(DATABASE_FOLDER, exist_ok=True)
         user_data_for_tinydb = cached_results[username]
         user_data_for_tinydb['username'] = username
         TinyDB(DATABASE_FILE).table('users_info').insert(user_data_for_tinydb)
@@ -248,7 +248,8 @@ def load_database_to_cache():
         for user in TinyDB(DATABASE_FILE).table("users_info").all():
             dict_for_cache[user['username']] = user
             dict_for_cache[user['username']].pop('username')
-        print(f"{len(cached_results)} users info retrieved from database file: '{DATABASE_FILE}'")
+        if dict_for_cache:
+            print(f"{len(dict_for_cache)} users info retrieved from database file: '{DATABASE_FILE}'")
     return dict_for_cache
 
 
