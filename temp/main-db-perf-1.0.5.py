@@ -37,7 +37,7 @@ def full_stack():
     trc = 'Traceback (most recent call last):\n'
     stackstr = trc + ''.join(traceback.format_list(stack))
     if exc is not None:
-         stackstr += '  ' + traceback.format_exc().lstrip(trc)
+        stackstr += '  ' + traceback.format_exc().lstrip(trc)
     return stackstr
 
 
@@ -73,7 +73,7 @@ async def revenue_yearly_data_split(data2019):
     prime2019 = round(prime2019, 2)
     bits2019 = round(bits2019, 2)
     
-    return [total2019,ad2019,sub2019,prime2019,bits2019,totaldatagross,totaldataad,totaldatasub, totaldatabits,totaldataprime]
+    return [total2019, ad2019, sub2019, prime2019, bits2019, totaldatagross, totaldataad, totaldatasub, totaldatabits, totaldataprime]
 
 
 async def revenue_data_setup(streamer_data):
@@ -155,31 +155,31 @@ async def revenue_data_setup(streamer_data):
                 "{:,}".format(sub2021)) + " USD`\n" + ':stars: Primers Total: ' + "`$" + str(
                 "{:,}".format(prime2021)) + " USD`\n" + ':ice_cube: Bits Total: ' + "`$" + str(
                 "{:,}".format(bits2021)) + " USD`"
-        return [data19,data20,data21,totaldatagross,totaldataad,totaldatasub,totaldatabits,totaldataprime,month,year,now]
+        return [data19, data20, data21, totaldatagross, totaldataad, totaldatasub, totaldatabits, totaldataprime, month, year, now]
     except Exception as e:
         print(full_stack())
 
 
 async def api_choice(username, ctx):
     if API_CHOICE == 'helix':
-            atoken = await get_access_token()
-            r = requests.get("https://api.twitch.tv/helix/users?login=" + username.lower(),
-                             headers={"Client-ID": TWITCH_ID, 'Authorization': 'Bearer ' + atoken})
-            rjson = json.loads(r.text)
-            try:
-                streamer_id = rjson['data'][0]["id"]
-                display_name = rjson['data'][0]["display_name"]
-                logo = rjson['data'][0]["profile_image_url"]
-                bio = rjson['data'][0]["description"]
-                created = rjson['data'][0]["created_at"]
-                return [streamer_id,display_name,logo,bio,created]
-            except Exception as e:
-                print(full_stack())
-                await ctx.send(f'This user {username} does not exist or the API is broken. (check your twitch tokens)')
+        atoken = await get_access_token()
+        r = requests.get("https://api.twitch.tv/helix/users?login=" + username.lower(),
+                         headers={"Client-ID": TWITCH_ID, 'Authorization': 'Bearer ' + atoken})
+        rjson = json.loads(r.text)
+        try:
+            streamer_id = rjson['data'][0]["id"]
+            display_name = rjson['data'][0]["display_name"]
+            logo = rjson['data'][0]["profile_image_url"]
+            bio = rjson['data'][0]["description"]
+            created = rjson['data'][0]["created_at"]
+            return [streamer_id, display_name, logo, bio, created]
+        except Exception as e:
+            print(full_stack())
+            await ctx.send(f'This user {username} does not exist or the API is broken. (check your twitch tokens)')
 
     if API_CHOICE == 'kraken':
         r = requests.get("https://api.twitch.tv/kraken/users?login=" + username.lower(),
-                            headers={"Client-ID": TWITCH_ID, "Accept": "application/vnd.twitchtv.v5+json"})
+                         headers={"Client-ID": TWITCH_ID, "Accept": "application/vnd.twitchtv.v5+json"})
         rjson = json.loads(r.text)
         try:
             streamer_id = rjson['users'][0]["_id"]
@@ -187,7 +187,7 @@ async def api_choice(username, ctx):
             logo = rjson['users'][0]["logo"]
             bio = rjson['users'][0]["bio"]
             created = rjson['users'][0]["created_at"]
-            return [streamer_id,display_name,logo,bio,created]
+            return [streamer_id, display_name, logo, bio, created]
         except Exception as e:
             print(full_stack())
             await ctx.send(f'The user {username} does not exist or the API is broken.')
@@ -298,77 +298,64 @@ async def main_parser(streamer_id, display_name, ctx, data2019, data2020, data20
         onlyfiles = [f for f in listdir(os.path.dirname(__file__)+'\\data\\csv\\') if isfile(join(os.path.dirname(__file__)+'\\data\\csv\\', f))]
         countfiles = len(onlyfiles)
 
-        position_in_previous_csv = 1
         for file in onlyfiles:
             filearr = file.split("_")
             year = filearr[2]
             month = filearr[3]
             month = month[:-4]
-            try:
-                with open(os.path.dirname(__file__)+'\\data\\csv\\'+str(file), 'r', newline='') as g:
-                    detected = 0
-                    report_date = str(month)+'/'+str(year)
-                    for i, row in enumerate(g):
-                        if i >= position_in_previous_csv:
-                            if row.split(',')[0] == streamer_id:
-                                row = row.split(',')
-                                detected = 1
-                                break
+            detected = 0
+            with open(os.path.dirname(__file__)+'\\data\\csv\\'+str(file), 'r', newline='') as g:
+                for i, row in enumerate(g):
+                    if row.split(',')[0] == streamer_id:
+                        row = row.split(',')
+                        detected = 1
+                        break
 
-                if detected == 1:
-                    if active_mounth_count == 0:
-                        yearog = str(year)
-                        monthog = str(month)
-                    active_mounth_count += 1
-                    mounth_count += 1
+            if detected == 1:
+                if active_mounth_count == 0:
+                    yearog = str(year)
+                    monthog = str(month)
+                active_mounth_count += 1
+                mounth_count += 1
 
-                    ad_share_gross = float(row[2])
-                    sub_share_gross = float(row[3])
-                    bits_share_gross = float(row[4])
-                    bits_developer_share_gross = float(row[5])
-                    bits_extension_share_gross = float(row[6])
-                    prime_sub_share_gross = float(row[7])
-                    bit_share_ad_gross = float(row[8])
-                    fuel_rev_gross = float(row[9])
-                    bb_rev_gross = float(row[10])
+                ad_share_gross = float(row[2])
+                sub_share_gross = float(row[3])
+                bits_share_gross = float(row[4])
+                bits_developer_share_gross = float(row[5])
+                bits_extension_share_gross = float(row[6])
+                prime_sub_share_gross = float(row[7])
+                bit_share_ad_gross = float(row[8])
+                fuel_rev_gross = float(row[9])
+                bb_rev_gross = float(row[10])
 
-                    # Adding values of same category
-                    bits = bits_share_gross + bit_share_ad_gross + bits_developer_share_gross + bits_extension_share_gross
-                    total = ad_share_gross + sub_share_gross + bits + prime_sub_share_gross + fuel_rev_gross + bb_rev_gross
+                # Adding values of same category
+                bits = bits_share_gross + bit_share_ad_gross + bits_developer_share_gross + bits_extension_share_gross
+                total = ad_share_gross + sub_share_gross + bits + prime_sub_share_gross + fuel_rev_gross + bb_rev_gross
 
-                    # Calculating totals
-                    grosstotal += total
-                    adtotal += ad_share_gross
-                    subtotal += sub_share_gross
-                    bitstotal += bits
-                    primestotal += prime_sub_share_gross
+                # Calculating totals
+                grosstotal += total
+                adtotal += ad_share_gross
+                subtotal += sub_share_gross
+                bitstotal += bits
+                primestotal += prime_sub_share_gross
 
-                    # Rounding before making month data list
-                    month_data = [round(total, 2), round(ad_share_gross, 2), round(sub_share_gross, 2), round(prime_sub_share_gross, 2), bits, str(month), str(year)]
+                # Rounding before making month data list
+                month_data = [round(total, 2), round(ad_share_gross, 2), round(sub_share_gross, 2), round(prime_sub_share_gross, 2), bits, str(month), str(year)]
 
-                    if year == "19":
-                        data2019.append(month_data)
-                    if year == "20":
-                        data2020.append(month_data)
-                    if year == "21":
-                        data2021.append(month_data)
-                    await send_msg(ctx, display_name, mounth_count, countfiles)
-                else:
-                    mounth_count += 1
-                    await send_err(ctx, display_name, mounth_count, countfiles)
-                if detected == 0:
-                    month_data = [0, 0, 0, 0, 0, str(month), str(year)]
-                    if year == "19":
-                        data2019.append(month_data)
-                    if year == "20":
-                        data2020.append(month_data)
-                    if year == "21":
-                        data2021.append(month_data)
+                await send_msg(ctx, display_name, mounth_count, countfiles)
+            else:
+                mounth_count += 1
+                month_data = [0, 0, 0, 0, 0, str(month), str(year)]
 
-            except Exception as e:
-                print(full_stack())
+                await send_err(ctx, display_name, mounth_count, countfiles)
 
-            #  Adding a blank month to year data.
+            if year == "19":
+                data2019.append(month_data)
+            if year == "20":
+                data2020.append(month_data)
+            if year == "21":
+                data2021.append(month_data)
+
         return [round(grosstotal, 2), round(adtotal, 2), round(subtotal, 2), round(primestotal, 2), round(bitstotal, 2), monthog, yearog, data2019, data2020, data2021]
     except Exception as e:
         print(full_stack())
@@ -405,7 +392,7 @@ async def check(ctx, username: str):
         if username in cached_results:
             bio, created, display_name, logo, streamer_id = await retrieve_user_info_from_cache(username)
         else:
-            api_data = await api_choice(username,ctx)
+            api_data = await api_choice(username, ctx)
             streamer_id = api_data[0]
             display_name = api_data[1]
             logo = api_data[2]
@@ -457,7 +444,7 @@ async def revenue(ctx, username: str, *options: str):
         if username in cached_results:
             bio, created, display_name, logo, streamer_id = await retrieve_user_info_from_cache(username)
         else:
-            api_data = await api_choice(username,ctx)
+            api_data = await api_choice(username, ctx)
             streamer_id = api_data[0]
             display_name = api_data[1]
             logo = api_data[2]
@@ -465,11 +452,6 @@ async def revenue(ctx, username: str, *options: str):
             created = api_data[4]
         idcheck = await check_id(streamer_id)
         if idcheck:
-            totaldatagross = 0
-            totaldataad = 0
-            totaldatasub = 0
-            totaldatabits = 0
-            totaldataprime = 0
             main_msg = await ctx.send('Data for '+display_name+' is loading... You will be pinged when the embed is sent!')
             # Check presence of streamer in cache
             if username in cached_results:
@@ -486,13 +468,13 @@ async def revenue(ctx, username: str, *options: str):
             data20 = revenue_data_one[1]
             data21 = revenue_data_one[2]
             totaldatagross = revenue_data_one[3]
-            totaldataad= revenue_data_one[4]
+            totaldataad = revenue_data_one[4]
             totaldatasub = revenue_data_one[5]
             totaldatabits = revenue_data_one[6]
             totaldataprime = revenue_data_one[7]
             month = revenue_data_one[8]
             year = revenue_data_one[9]
-            now= revenue_data_one[10]
+            now = revenue_data_one[10]
 
             # Pie chart data formatting
             ads_percentage = round(streamer_data[1] / streamer_data[0] * 100, 2)
@@ -502,7 +484,7 @@ async def revenue(ctx, username: str, *options: str):
 
             # Some graph related stuff
             short_url = pyshorteners.Shortener()
-            timeline_url = "{options:{title:{display:true,text:'Twitch Creator Data - " + display_name +" - Timeline of Gross Total', fontSize:20}},type:'line',data:{labels:" + str(LABELS) + ", datasets:[{label:'Gross Total', data: " + str(totaldatagross) + ", fill:false,borderColor:'blue'}]}}"
+            timeline_url = "{options:{title:{display:true,text:'Twitch Creator Data - " + display_name + " - Timeline of Gross Total', fontSize:20}},type:'line',data:{labels:" + str(LABELS) + ", datasets:[{label:'Gross Total', data: " + str(totaldatagross) + ", fill:false,borderColor:'blue'}]}}"
             detailed_url = "{options:{title:{display:true,text:'Twitch Creator Data - " + display_name + "', fontSize:20}},type:'line',data:{labels:" + str(
                 LABELS) + ", datasets:[{label:'Ads', data: " + str(
                 totaldataad) + ", fill:false,borderColor:'green'},{label:'Subs', data: " + str(
@@ -518,13 +500,13 @@ async def revenue(ctx, username: str, *options: str):
 
             if "timeline" in options or "detailed" in options or "piechart" in options or "allgraphs" in options:
                 if "timeline" in options:
-                    graph=f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(timeline_url))}"
+                    graph = f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(timeline_url))}"
                     embed.set_image(url=graph)
                 if "detailed" in options:
-                    graph=f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(detailed_url))}"
+                    graph = f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(detailed_url))}"
                     embed.set_image(url=graph)
                 if "piechart" in options:
-                    graph=f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(pie_chart_url))}"
+                    graph = f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(pie_chart_url))}"
                     embed.set_image(url=graph)
                 if "allgraphs" in options:
                     await ctx.send(f"{short_url.tinyurl.short('https://quickchart.io/chart?c='+quote(timeline_url))}")
@@ -563,7 +545,7 @@ async def revenue(ctx, username: str, *options: str):
         if not idcheck:
             now = datetime.datetime.utcnow()
             embed = discord.Embed(title=f"Twitch Creator Info - {display_name} - ({username})",
-                                description="`This user is not in the leak!`", timestamp=now, url=f"https://twitch.tv/{username}")
+                                  description="`This user is not in the leak!`", timestamp=now, url=f"https://twitch.tv/{username}")
 
             embed.set_thumbnail(url=logo)
             if bio:
@@ -590,8 +572,7 @@ async def info(ctx):
                     value='`nograph`\n`timeline`\n`detailed`\n`piechart`\n`allgraphs`', inline=False)
     embed.add_field(name=':keyboard: Github',
                     value='`https://github.com/SSSEAL-C/twitch-leak-bot-discord`', inline=False)
-    embed.add_field(name=':cd: Version',
-                            value=f'`{VERSION}`', inline=False)
+    embed.add_field(name=':cd: Version', value=f'`{VERSION}`', inline=False)
     embed.set_footer(text="Made by SSSEAL-C")
     await ctx.send('<@'+str(ctx.author.id)+">", embed=embed)
 
@@ -612,7 +593,7 @@ async def ping(ctx):
 async def cache(ctx):
     try:
         cached_count = 0
-        cached_streamer_list=[]
+        cached_streamer_list = []
         for key in cached_results:
             cached_count += 1
             cached_streamer_list.append(key)
@@ -622,10 +603,10 @@ async def cache(ctx):
             embed_cache = discord.Embed(title=f'Cache - {cached_count} users cached')
         if str(cached_streamer_list) == "[]":
             embed_cache.add_field(name=f'User list',
-                                    value=f'No users cached!')
+                                  value=f'No users cached!')
         if str(cached_streamer_list) != "[]":
             embed_cache.add_field(name=f'User list',
-                                    value=str("\n".join(cached_streamer_list)))
+                                  value=str("\n".join(cached_streamer_list)))
         
         # embed_cache.edit(title=f'Twitch Creator Info - {cached_count}Streamers cached')
         await ctx.send(embed=embed_cache)
@@ -635,7 +616,7 @@ async def cache(ctx):
 
 
 @bot.command()
-async def compare(ctx, username_one: str, username_two:str, *options:str):
+async def compare(ctx, username_one: str, username_two: str, *options: str):
     username_one = username_one.lower()
     username_two = username_two.lower()
 
@@ -650,7 +631,7 @@ async def compare(ctx, username_one: str, username_two:str, *options:str):
     if username_one in cached_results:
         bio_one, created_one, display_name_one, logo_one, streamer_id_one = await retrieve_user_info_from_cache(username_one)
     else:
-        api_data_one = await api_choice(username_one,ctx)
+        api_data_one = await api_choice(username_one, ctx)
         streamer_id_one = api_data_one[0]
         display_name_one = api_data_one[1]
         logo_one = api_data_one[2]
@@ -659,7 +640,7 @@ async def compare(ctx, username_one: str, username_two:str, *options:str):
     if username_two in cached_results:
         bio_two, created_two, display_name_two, logo_two, streamer_id_two = await retrieve_user_info_from_cache(username_two)
     else:
-        api_data_two = await api_choice(username_two,ctx)
+        api_data_two = await api_choice(username_two, ctx)
         streamer_id_two = api_data_two[0]
         display_name_two = api_data_two[1]
         logo_two = api_data_two[2]
@@ -670,16 +651,6 @@ async def compare(ctx, username_one: str, username_two:str, *options:str):
     if idcheck_one:
         if idcheck_two:
             try:
-                totaldatagross_one = 0
-                totaldataad_one = 0
-                totaldatasub_one = 0
-                totaldatabits_one = 0
-                totaldataprime_one = 0
-                totaldatagross_two = 0
-                totaldataad_two = 0
-                totaldatasub_two = 0
-                totaldatabits_two = 0
-                totaldataprime_two = 0
                 main_msg = await ctx.send('Data for '+display_name_one+' is loading... You will be pinged when the embed is sent!')
                 # Check presence of streamer in cache
                 if username_one in cached_results:
@@ -694,19 +665,10 @@ async def compare(ctx, username_one: str, username_two:str, *options:str):
                 data19_one = revenue_data_one[0]
                 data20_one = revenue_data_one[1]
                 data21_one = revenue_data_one[2]
+
                 totaldatagross_one = revenue_data_one[3]
-                totaldataad_one= revenue_data_one[4]
-                totaldatasub_one = revenue_data_one[5]
-                totaldatabits_one = revenue_data_one[6]
-                totaldataprime_one = revenue_data_one[7]
                 month_one = revenue_data_one[8]
                 year_one = revenue_data_one[9]
-                now_one = revenue_data_one[10]
-                # Pie chart data formatting
-                ads_percentage_one = round(streamer_data_one[1] / streamer_data_one[0] * 100, 2)
-                subs_percentage_one = round(streamer_data_one[2] / streamer_data_one[0] * 100, 2)
-                primes_percentage_one = round(streamer_data_one[3] / streamer_data_one[0] * 100, 2)
-                bits_percentage_one = round(streamer_data_one[4] / streamer_data_one[0] * 100, 2)
                 
                 if username_two in cached_results:
                     streamer_data_two = await retrieve_streamer_data_from_cache(username_two)
@@ -721,22 +683,12 @@ async def compare(ctx, username_one: str, username_two:str, *options:str):
                 data20_two = revenue_data_two[1]
                 data21_two = revenue_data_two[2]
                 totaldatagross_two = revenue_data_two[3]
-                totaldataad_two= revenue_data_two[4]
-                totaldatasub_two = revenue_data_two[5]
-                totaldatabits_two = revenue_data_two[6]
-                totaldataprime_two = revenue_data_two[7]
                 month_two = revenue_data_two[8]
                 year_two = revenue_data_two[9]
-                now_two = revenue_data_two[10]
-                # Pie chart data formatting
-                ads_percentage_two = round(streamer_data_two[1] / streamer_data_two[0] * 100, 2)
-                subs_percentage_two = round(streamer_data_two[2] / streamer_data_two[0] * 100, 2)
-                primes_percentage_two = round(streamer_data_two[3] / streamer_data_two[0] * 100, 2)
-                bits_percentage_two = round(streamer_data_two[4] / streamer_data_two[0] * 100, 2)
 
                 # Some graph related stuff
                 short_url = pyshorteners.Shortener()
-                timeline_url = "{options:{title:{display:true,text:'Twitch Creator Data - " + display_name_one +" vs. "+display_name_two +" - Timeline of Gross Total', fontSize:20}},type:'line',data:{labels:" + str(LABELS) + ", datasets:[{label:'Gross Total of "+display_name_one+"', data: " + str(totaldatagross_one) + ", fill:false,borderColor:'blue'},{label:'Gross Total of "+display_name_two+"', data: " + str(totaldatagross_two) + ", fill:false,borderColor:'red'}]}}"
+                timeline_url = "{options:{title:{display:true,text:'Twitch Creator Data - " + display_name_one + " vs. " + display_name_two + " - Timeline of Gross Total', fontSize:20}},type:'line',data:{labels:" + str(LABELS) + ", datasets:[{label:'Gross Total of "+display_name_one+"', data: " + str(totaldatagross_one) + ", fill:false,borderColor:'blue'},{label:'Gross Total of "+display_name_two+"', data: " + str(totaldatagross_two) + ", fill:false,borderColor:'red'}]}}"
 
                 embed = discord.Embed(
                     title=f"Twitch Creator Info - {display_name_one} vs. {display_name_two}", timestamp=now)
