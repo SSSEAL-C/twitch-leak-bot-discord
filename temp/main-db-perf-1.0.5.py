@@ -306,8 +306,6 @@ async def main_parser(streamer_id, display_name, ctx, data2019, data2020, data20
             month = month[:-4]
             try:
                 with open(os.path.dirname(__file__)+'\\data\\csv\\'+str(file), 'r', newline='') as g:
-                    # reader = csv.reader(g)
-                    g.readline()
                     detected = 0
                     report_date = str(month)+'/'+str(year)
                     for i, row in enumerate(g):
