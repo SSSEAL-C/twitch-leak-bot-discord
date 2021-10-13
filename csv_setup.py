@@ -21,9 +21,9 @@ def create_csv(filename, csv_content):
     :param filename: name of the csv file.
     :param csv_content: a list of lists of information.
     """
-    os.makedirs(pathlib.Path.cwd() / 'data', exist_ok=True)
+    os.makedirs(pathlib.Path.cwd() / 'data' / 'csv', exist_ok=True)
     with open(
-            pathlib.Path.cwd() / 'data' / filename, 'w', newline='', encoding='utf-8-sig'
+            pathlib.Path.cwd() / 'data' / 'csv' / filename, 'w', newline='', encoding='utf-8-sig'
     ) as g:
         for row in csv_content:
             csv.writer(g).writerow(row)
@@ -39,7 +39,7 @@ def read_and_clean_csv(year, month):
     print(f"Cleaning {filename}, please wait...")
     print()
 
-    with open(pathlib.Path.cwd() / 'data' / filename, 'r', encoding='utf-8') as f:
+    with open(pathlib.Path.cwd() / 'data' / 'csv' / filename, 'r', encoding='utf-8') as f:
         content = csv.reader(f)
         cleaned_csv = []
         header = True
