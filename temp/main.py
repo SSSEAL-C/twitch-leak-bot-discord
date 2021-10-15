@@ -184,7 +184,6 @@ async def api_choice(username, ctx):
             await ctx.send(f"`This user '{username}' does not exist!`")
         except KeyError as e:
             print(full_stack())
-            print(e)
             await ctx.send(f"`The Twitch API is broken (check your twitch tokens).`")
         except Exception as e:
             print(full_stack())
@@ -458,7 +457,6 @@ async def check(ctx, username: str):
             await main_msg.edit(embed=embed, content="")
     except Exception as e:
         print(full_stack())
-        print(str(e))
 
 
 @bot.command()
@@ -494,7 +492,6 @@ async def revenue(ctx, username: str, *options: str):
                 await store_user_in_database(username)
 
             revenue_data_one = await revenue_data_setup(streamer_data)
-            print(revenue_data_one)
 
             data19 = revenue_data_one[0]
             data20 = revenue_data_one[1]
@@ -632,7 +629,6 @@ async def ping(ctx):
         await ctx.send(embed=embed_var)
     except Exception as e:
         print(full_stack())
-        print(str(e))
 
 
 @bot.command()
@@ -658,7 +654,6 @@ async def cache(ctx):
         await ctx.send(embed=embed_cache)
     except Exception as e:
         print(full_stack())
-        print(str(e))
 
 
 @bot.command()
@@ -821,9 +816,6 @@ async def on_command_error(ctx, error):
 # All messages detection
 @bot.event
 async def on_message(message):
-    print(bot.user.id)
-    print(message)
-    print(message.content)
     if message.content == DISCORD_BOT_PREFIX:
         await message.channel.send(f"`Please enter a command\n(eg. {DISCORD_BOT_PREFIX}revenue ludwig)\nType {DISCORD_BOT_PREFIX}info to see all available commands`")
     if f"@{bot.user.id}" in message.content and not message.mention_everyone:
