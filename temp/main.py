@@ -824,7 +824,7 @@ async def on_message(message):
     await bot.process_commands(message)
 
 if TWITCH_ID == "twitch client id" or DISCORD_TOKEN == 'discord bot token':
-    exit("You must enter twitch adn discord API parameters, see README.md for instructions")
+    exit("You must enter twitch and discord API parameters, see README.md for instructions")
 if API_CHOICE == 'helix' and TWITCH_SECRET == "twitch client secret":
     exit("If twitch API is helix, you must enter twitch client secret, see README.md for instructions")
 
