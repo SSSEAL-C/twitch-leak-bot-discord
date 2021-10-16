@@ -3,6 +3,7 @@ from discord.ext import commands
 import discord
 from os import listdir
 from os.path import isfile, join
+import pathlib
 
 import requests
 import json
@@ -13,7 +14,7 @@ from tinydb import TinyDB
 
 now = datetime.datetime.utcnow()
 
-VERSION = 'v1.0.5'
+VERSION = 'v1.0.6'
 API_CHOICE = 'helix'  # use either helix or kraken
 TWITCH_ID = "twitch client id"
 TWITCH_SECRET = "twitch client secret"  # only required for helix
@@ -23,8 +24,8 @@ DISCORD_BOT_PREFIX = "tw!"
 
 USE_DATABASE = True  # Set to True or False to use database storage
 
-DATABASE_FOLDER = os.path.dirname(__file__) + '\\data\\db\\'
-DATABASE_FILE = os.path.dirname(__file__) + '\\data\\db\\db.json'
+DATABASE_FOLDER = pathlib.Path.cwd() / 'data' / 'db'
+DATABASE_FILE = pathlib.Path.cwd() / 'data' / 'db' / 'db.json'
 
 
 def full_stack():
@@ -86,6 +87,7 @@ async def revenue_data_setup(streamer_data):
         month = streamer_data[5]
         year = streamer_data[6]
         now = datetime.datetime.utcnow()
+
         revenue2019 = await revenue_yearly_data_split(data2019)
         total2019 = revenue2019[0]
         ad2019 = revenue2019[1]
@@ -165,36 +167,51 @@ async def revenue_data_setup(streamer_data):
 
 async def api_choice(username, ctx):
     if API_CHOICE == 'helix':
-        atoken = await get_access_token()
-        r = requests.get("https://api.twitch.tv/helix/users?login=" + username.lower(),
-                         headers={"Client-ID": TWITCH_ID, 'Authorization': 'Bearer ' + atoken})
-        rjson = json.loads(r.text)
         try:
+            atoken = await get_access_token()
+            r = requests.get("https://api.twitch.tv/helix/users?login=" + username.lower(),
+                             headers={"Client-ID": TWITCH_ID, 'Authorization': 'Bearer ' + atoken})
+            rjson = json.loads(r.text)
+
             streamer_id = rjson['data'][0]["id"]
             display_name = rjson['data'][0]["display_name"]
             logo = rjson['data'][0]["profile_image_url"]
             bio = rjson['data'][0]["description"]
             created = rjson['data'][0]["created_at"]
             return [streamer_id, display_name, logo, bio, created]
+        except IndexError as e:
+            print(full_stack())
+            await ctx.send(f"`This user '{username}' does not exist!`")
+        except KeyError as e:
+            print(full_stack())
+            await ctx.send(f"`The Twitch API is broken (check your twitch tokens).`")
         except Exception as e:
             print(full_stack())
-            await ctx.send(f'This user {username} does not exist or the API is broken. (check your twitch tokens)')
+            print(e)
+            await ctx.send(f'The user {username} does not exist or the API is broken.')
 
     if API_CHOICE == 'kraken':
-        r = requests.get("https://api.twitch.tv/kraken/users?login=" + username.lower(),
-                         headers={"Client-ID": TWITCH_ID, "Accept": "application/vnd.twitchtv.v5+json"})
-        rjson = json.loads(r.text)
         try:
+            r = requests.get("https://api.twitch.tv/kraken/users?login=" + username.lower(),
+                             headers={"Client-ID": TWITCH_ID, "Accept": "application/vnd.twitchtv.v5+json"})
+            rjson = json.loads(r.text)
+            print(rjson)
             streamer_id = rjson['users'][0]["_id"]
             display_name = rjson['users'][0]["display_name"]
             logo = rjson['users'][0]["logo"]
             bio = rjson['users'][0]["bio"]
             created = rjson['users'][0]["created_at"]
             return [streamer_id, display_name, logo, bio, created]
+        except IndexError as e:
+            print(full_stack())
+            await ctx.send(f"`This user '{username}' does not exist!`")
+        except KeyError as e:
+            print(full_stack())
+            await ctx.send(f"`The Twitch API is broken (check your twitch tokens).`")
         except Exception as e:
             print(full_stack())
+            print(e)
             await ctx.send(f'The user {username} does not exist or the API is broken.')
-            return
 
 
 async def store_user_info_in_cache(bio, created, display_name, logo, streamer_data, streamer_id, username):
@@ -267,7 +284,7 @@ async def send_err(ctx, username, amount_count, countfiles):
 
 async def check_id(streamer_id):
     check_detected = 0
-    with open(os.path.dirname(__file__) + '\\data\\ids\\ids.json', 'r') as g1:
+    with open(pathlib.Path.cwd() / 'data' / 'ids' / 'ids.json', 'r') as g1:
         g = g1.read()
         data = json.loads(g)
         users = data['ids']
@@ -299,8 +316,9 @@ async def main_parser(streamer_id, display_name, ctx, data2019, data2020, data20
         mounth_count = 0
         active_mounth_count = 0
 
-        onlyfiles = [f for f in listdir(os.path.dirname(__file__) + '\\data\\csv\\') if
-                     isfile(join(os.path.dirname(__file__) + '\\data\\csv\\', f))]
+        onlyfiles = [f for f in listdir(pathlib.Path.cwd() / 'data' / 'csv') if
+                     isfile(join(pathlib.Path.cwd() / 'data' / 'csv', f))]
+        onlyfiles.sort()
         countfiles = len(onlyfiles)
 
         for file in onlyfiles:
@@ -309,7 +327,7 @@ async def main_parser(streamer_id, display_name, ctx, data2019, data2020, data20
             month = filearr[3]
             month = month[:-4]
             detected = 0
-            with open(os.path.dirname(__file__) + '\\data\\csv\\' + str(file), 'r', newline='') as g:
+            with open(pathlib.Path.cwd() / 'data' / 'csv' / str(file), 'r', newline='') as g:
                 for i, row in enumerate(g):
                     if row.split(',')[0] == streamer_id:
                         row = row.split(',')
@@ -439,7 +457,6 @@ async def check(ctx, username: str):
             await main_msg.edit(embed=embed, content="")
     except Exception as e:
         print(full_stack())
-        print(str(e))
 
 
 @bot.command()
@@ -452,15 +469,14 @@ async def revenue(ctx, username: str, *options: str):
 
         print(f"revenue {username}")
 
-        if username in cached_results:
-            bio, created, display_name, logo, streamer_id = await retrieve_user_info_from_cache(username)
-        else:
-            api_data = await api_choice(username, ctx)
-            streamer_id = api_data[0]
-            display_name = api_data[1]
-            logo = api_data[2]
-            bio = api_data[3]
-            created = api_data[4]
+        # if username in cached_results:
+        #     bio, created, display_name, logo, streamer_id = await retrieve_user_info_from_cache(username)
+        api_data = await api_choice(username, ctx)
+        streamer_id = api_data[0]
+        display_name = api_data[1]
+        logo = api_data[2]
+        bio = api_data[3]
+        created = api_data[4]
         idcheck = await check_id(streamer_id)
         if idcheck:
             main_msg = await ctx.send(
@@ -592,7 +608,7 @@ async def info(ctx):
     embed.add_field(name=':busts_in_silhouette: Creators',
                     value='`realsovietseal#0001`', inline=False)
     embed.add_field(name=':gear: Commands',
-                    value=f'```{DISCORD_BOT_PREFIX}revenue [twitch username] <option>\n{DISCORD_BOT_PREFIX}ping\n{DISCORD_BOT_PREFIX}info\n{DISCORD_BOT_PREFIX}check [twitch username]\n\neg. {DISCORD_BOT_PREFIX}revenue ludwig nograph```',
+                    value=f'```{DISCORD_BOT_PREFIX}revenue [twitch username] <option>\n{DISCORD_BOT_PREFIX}compare [twitch username1] [twitch username2]\n{DISCORD_BOT_PREFIX}ping\n{DISCORD_BOT_PREFIX}info\n{DISCORD_BOT_PREFIX}check [twitch username]\n\neg. {DISCORD_BOT_PREFIX}revenue ludwig nograph```',
                     inline=False)
     embed.add_field(name=':gear: Revenue Command Options',
                     value='`nograph`\n`timeline`\n`detailed`\n`piechart`\n`allgraphs`', inline=False)
@@ -612,7 +628,6 @@ async def ping(ctx):
         await ctx.send(embed=embed_var)
     except Exception as e:
         print(full_stack())
-        print(str(e))
 
 
 @bot.command()
@@ -622,7 +637,8 @@ async def cache(ctx):
         cached_streamer_list = []
         for key in cached_results:
             cached_count += 1
-            cached_streamer_list.append(key)
+            if cached_count < 15:
+                cached_streamer_list.append(key)
         if cached_count == 1:
             embed_cache = discord.Embed(title=f'Cache - {cached_count} user cached')
         else:
@@ -631,19 +647,17 @@ async def cache(ctx):
             embed_cache.add_field(name=f'User list',
                                   value=f'No users cached!')
         if str(cached_streamer_list) != "[]":
-            embed_cache.add_field(name=f'User list',
+            embed_cache.add_field(name=f'User list (max display: 15)',
                                   value=str("\n".join(cached_streamer_list)))
 
         # embed_cache.edit(title=f'Twitch Creator Info - {cached_count}Streamers cached')
         await ctx.send(embed=embed_cache)
     except Exception as e:
         print(full_stack())
-        print(str(e))
 
 
 @bot.command()
 async def compare(ctx, username_one: str, username_two: str, *options: str):
-    global main_msg_one
     username_one = username_one.lower()
     username_two = username_two.lower()
 
@@ -655,26 +669,27 @@ async def compare(ctx, username_one: str, username_two: str, *options: str):
     data2021_two = []
 
     print(f"compare {username_one} vs. {username_two}")
-    if username_one in cached_results:
-        bio_one, created_one, display_name_one, logo_one, streamer_id_one = await retrieve_user_info_from_cache(
-            username_one)
-    else:
-        api_data_one = await api_choice(username_one, ctx)
-        streamer_id_one = api_data_one[0]
-        display_name_one = api_data_one[1]
-        logo_one = api_data_one[2]
-        bio_one = api_data_one[3]
-        created_one = api_data_one[4]
-    if username_two in cached_results:
-        bio_two, created_two, display_name_two, logo_two, streamer_id_two = await retrieve_user_info_from_cache(
-            username_two)
-    else:
-        api_data_two = await api_choice(username_two, ctx)
-        streamer_id_two = api_data_two[0]
-        display_name_two = api_data_two[1]
-        logo_two = api_data_two[2]
-        bio_two = api_data_two[3]
-        created_two = api_data_two[4]
+    # if username_one in cached_results:
+    #     bio_one, created_one, display_name_one, logo_one, streamer_id_one = await retrieve_user_info_from_cache(
+    #         username_one)
+    # else:
+    api_data_one = await api_choice(username_one, ctx)
+    streamer_id_one = api_data_one[0]
+    display_name_one = api_data_one[1]
+    logo_one = api_data_one[2]
+    bio_one = api_data_one[3]
+    created_one = api_data_one[4]
+
+    # if username_two in cached_results:
+    #     bio_two, created_two, display_name_two, logo_two, streamer_id_two = await retrieve_user_info_from_cache(
+    #         username_two)
+    # else:
+    api_data_two = await api_choice(username_two, ctx)
+    streamer_id_two = api_data_two[0]
+    display_name_two = api_data_two[1]
+    logo_two = api_data_two[2]
+    bio_two = api_data_two[3]
+    created_two = api_data_two[4]
 
     idcheck_one = await check_id(streamer_id_one)
     idcheck_two = await check_id(streamer_id_two)
@@ -773,22 +788,45 @@ Error catching
 @revenue.error
 async def revenue_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-        await ctx.send(f'You are not providing an argument! (eg. {DISCORD_BOT_PREFIX}revenue ludwig)')
+        await ctx.send(
+            f'`You are not providing an argument!\n(eg. {DISCORD_BOT_PREFIX}revenue ludwig)\nType {DISCORD_BOT_PREFIX}info to see available options.`')
+
+
+@check.error
+async def revenue_check(ctx, error):
+    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+        await ctx.send(
+            f'`You are not providing an argument!\n(eg. {DISCORD_BOT_PREFIX}check ludwig)\nType {DISCORD_BOT_PREFIX}info to see available options.`')
+
+
+@compare.error
+async def revenue_compare(ctx, error):
+    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+        await ctx.send(
+            f'`You are not providing enough arguments!\n(eg. {DISCORD_BOT_PREFIX}compare ludwig xqcow)\nType {DISCORD_BOT_PREFIX}info to see available options.`')
 
 
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.CommandNotFound):
-        await ctx.send("That command wasn't found! Sorry :-(")
-        await ctx.send(f"Type {DISCORD_BOT_PREFIX}info to see available commands :-)")
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-        await ctx.send("Please enter a command")
-        await ctx.send(f'(eg. {DISCORD_BOT_PREFIX}revenue ludwig)')
-        await ctx.send(f"Type {DISCORD_BOT_PREFIX}info to see all available commands :-)")
+        await ctx.send(f"`That command wasn't found! Sorry :-(\n(eg. {DISCORD_BOT_PREFIX}check ludwig)\nType {DISCORD_BOT_PREFIX}info to see available commands.`")
 
+
+# All messages detection
+@bot.event
+async def on_message(message):
+    message.content = message.content.lower()
+    if message.content[:4] == f"{DISCORD_BOT_PREFIX} ":
+        await message.channel.send(f"`There must be no space between {DISCORD_BOT_PREFIX} and command.\n(eg. {DISCORD_BOT_PREFIX}revenue ludwig)\nType {DISCORD_BOT_PREFIX}info to see all available commands.`")
+    elif message.content == DISCORD_BOT_PREFIX:
+        await message.channel.send(f"`Please enter a command.\n(eg. {DISCORD_BOT_PREFIX}revenue ludwig)\nType {DISCORD_BOT_PREFIX}info to see all available commands.`")
+    if f"@{bot.user.id}" in message.content or f"@!{bot.user.id}" in message.content and not message.mention_everyone:
+        await message.channel.send(f":robot:` At your service {message.author.name}! `:man_in_tuxedo:\n`Type {DISCORD_BOT_PREFIX}info to see available commands.`")
+    # The following line leaves commands operational after listening message
+    await bot.process_commands(message)
 
 if TWITCH_ID == "twitch client id" or DISCORD_TOKEN == 'discord bot token':
-    exit("You must enter twitch and discord API parameters, see README.md for instructions")
+    exit("You must enter twitch adn discord API parameters, see README.md for instructions")
 if API_CHOICE == 'helix' and TWITCH_SECRET == "twitch client secret":
     exit("If twitch API is helix, you must enter twitch client secret, see README.md for instructions")
 
