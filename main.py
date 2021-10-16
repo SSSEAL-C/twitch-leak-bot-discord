@@ -695,6 +695,8 @@ async def compare(ctx, username_one: str, username_two: str, *options: str):
     idcheck_two = await check_id(streamer_id_two)
     if idcheck_one and idcheck_two:
         try:
+            if username_one in cached_results and username_two in cached_results:
+                main_msg = await ctx.send('Data for ' + display_name_one + ' and ' + display_name_two + ' is loading... You will be pinged when the embed is sent!')
             if username_one not in cached_results and username_two not in cached_results:
                 main_msg = await ctx.send('Data for ' + display_name_one + ' and ' + display_name_two + ' is loading... You will be pinged when the embed is sent!')
             if username_one not in cached_results and username_two in cached_results:
