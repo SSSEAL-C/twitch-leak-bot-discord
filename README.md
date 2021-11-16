@@ -78,8 +78,11 @@ If you are using an app you registered before July 2021 you are using **kraken**
 open `main.py` and edit the following values
 
 `apichoice`: either `helix` or `kraken`
+
 `twitchid`: the Twitch Client ID
+
 `twitchsecret`: the Twitch Client Secret (only with `kraken`)
+
 `dtoken`: the Discord Bot Token
 
 
