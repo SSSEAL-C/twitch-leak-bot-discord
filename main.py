@@ -273,9 +273,9 @@ def load_database_to_cache():
     return dict_for_cache
 
 
-async def send_msg(ctx, username, amount_count, countfiles):
+async def send_msg(ctx, username, amount_count, countfiles,date):
     await ctx.edit(
-        content=':white_check_mark: `' + username + ' data found! (' + str(amount_count) + '/' + str(countfiles) + ')`')
+        content=':white_check_mark: `' + username + ' data found in '+date+'! (' + str(amount_count) + '/' + str(countfiles) + ')`')
 
 
 async def send_err(ctx, username, amount_count, countfiles):
@@ -365,8 +365,8 @@ async def main_parser(streamer_id, display_name, ctx, data2019, data2020, data20
                 # Rounding before making month data list
                 month_data = [round(total, 2), round(ad_share_gross, 2), round(sub_share_gross, 2),
                               round(prime_sub_share_gross, 2), bits, str(month), str(year)]
-
-                await send_msg(ctx, display_name, mounth_count, countfiles)
+                date=str(month)+"/"+str(year)
+                await send_msg(ctx, display_name, mounth_count, countfiles,date)
             else:
                 mounth_count += 1
                 month_data = [0, 0, 0, 0, 0, str(month), str(year)]
